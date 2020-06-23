@@ -1,0 +1,42 @@
+[submodule "api-gateway"]
+	path = api-gateway
+	url = https://github.com/meateam/api-gateway
+[submodule "authentication-service"]
+	path = authentication-service
+	url = https://github.com/meateam/authentication-service
+[submodule "delegation-service"]
+	path = delegation-service
+	url = https://github.com/meateam/delegation-service
+[submodule "donwload-service"]
+	path = donwload-service
+	url = https://github.com/meateam/download-service
+[submodule "drive-ui"]
+	path = drive-ui
+	url = https://github.com/meateam/drive-ui
+[submodule "file-service"]
+	path = file-service
+	url = https://github.com/meateam/file-service
+[submodule "kd-helm"]
+	path = kd-helm
+	url = https://github.com/meateam/kd-helm
+[submodule "permission-service"]
+	path = permission-service
+	url = https://github.com/meateam/permission-service
+[submodule "permit-service"]
+	path = permit-service
+	url = https://github.com/meateam/permit-service
+[submodule "search-service"]
+	path = search-service
+	url = https://github.com/meateam/search-service
+[submodule "spike-service"]
+	path = spike-service
+	url = https://github.com/meateam/spike-service
+[submodule "upload-service"]
+	path = upload-service
+	url = https://github.com/meateam/upload-service
+[submodule "user-service"]
+	path = user-service
+	url = https://github.com/meateam/user-service
+[submodule "web-ui"]
+	path = web-ui
+	url = https://github.com/meateam/web-ui
