@@ -1,0 +1,5 @@
+data/
+compose.env
+kd.config
+*helm/**/*.tgz
+*helm/**/*.lock

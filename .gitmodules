@@ -16,9 +16,6 @@
 [submodule "file-service"]
 	path = file-service
 	url = https://github.com/meateam/file-service
-[submodule "kd-helm"]
-	path = kd-helm
-	url = https://github.com/meateam/kd-helm
 [submodule "permission-service"]
 	path = permission-service
 	url = https://github.com/meateam/permission-service
