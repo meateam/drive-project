@@ -1,0 +1,50 @@
+[
+  {
+    "name": "api-gateway",
+    "tag": "v1.3"
+  },
+  {
+    "name": "authentication-service",
+    "tag": "v1.56"
+  },
+  {
+    "name": "delegation-service",
+    "tag": "v1.3"
+  },
+  {
+    "name": "download-service",
+    "tag": "v1.3"
+  },
+  {
+    "name": "file-service",
+    "tag": "v1.3"
+  },
+  {
+    "name": "permission-service",
+    "tag": "v1.3"
+  },
+  {
+    "name": "permit-service",
+    "tag": "v1.3"
+  },
+  {
+    "name": "search-service",
+    "tag": "v1.3"
+  },
+  {
+    "name": "spike-service",
+    "tag": "v1.3"
+  },
+  {
+    "name": "upload-service",
+    "tag": "v1.3"
+  },
+  {
+    "name": "user-service",
+    "tag": "v1.3"
+  },
+  {
+    "name": "web-ui",
+    "tag": "v1.3"
+  }
+]
