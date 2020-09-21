@@ -3,26 +3,26 @@
 Prerequisites before running the script:
 
 - Install jq for wsl/linux:
-  ` sudo apt-get install jq`
+  `apt-get install jq`
+
+- If you want to use the zip option, you need to install p7zip:
+  `apt-get install p7zip`
 
 - If your'e working on a local branch, make sure that your branch has published.
 
+---
+
+## Run the script :
+
 - Run the script from the drive-project repo folder.
 
-  Run:
+  Run Command:
 
   ```
   bash ./deployment.prod.sh
   ```
 
-- Run and update the z-helm charts tags
+#### Available flags:
 
-  ```
-  bash ./deployment.prod.sh --helm
-  ```
-
-- Run and make a zip of the images
-
-  ```
-  bash ./deployment.prod.sh --zip
-  ```
+- > **helm** - Run and update the z-helm charts tags
+- > **zip** - Run and make a zip of the images
