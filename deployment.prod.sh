@@ -12,6 +12,7 @@ AZURE_LOGIN_SERVER="$AZURE_CONTAINER_REGISTRY_NAME.azurecr.io/$AZURE_TEAM_NAME" 
 DATE=$(date +"%d.%m")                                                           # The date of the execution
 HALBANA_FOLDER="../halbana-$DATE"
 RED=`tput setaf 1`
+NC=`tput sgr0` # No Color
 
 ## --------------------------------------------------------------------------------------------------------
 # Azure Functions
@@ -80,8 +81,12 @@ helm_check_tag_exists() {
 
 helm_change_tag() {
     # arguments: $1 - chart_name , $2 - chart_image_tag
-    echo "Changing the image tag for helm chart $1 to tag $2"
-    sed -r "s/^(\s*tag\s*:\s*).*/\1\"${2}\"/" -i z-helm/$1/values.yaml 
+    if [[ $(cat z-helm/$1/values.yaml | sed -n 's/.*\(tag\).*/\1/p') == "" ]]; then
+        echo "${RED} Cant found tag attribute in helm chart $1 ${NC}"
+    else 
+        echo "Changing the image tag for helm chart $1 to tag $2"
+        sed -r "s/^(\s*tag\s*:\s*).*/\1\"${2}\"/" -i z-helm/$1/values.yaml 
+    fi
 }
 
 ## --------------------------------------------------------------------------------------------------------
