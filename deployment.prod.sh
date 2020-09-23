@@ -11,6 +11,7 @@ AZURE_TEAM_NAME="meateam"                                                       
 AZURE_LOGIN_SERVER="$AZURE_CONTAINER_REGISTRY_NAME.azurecr.io/$AZURE_TEAM_NAME" # Insert azure login server
 DATE=$(date +"%d.%m")                                                           # The date of the execution
 HALBANA_FOLDER="../halbana-$DATE"
+RED=`tput setaf 1`
 
 ## --------------------------------------------------------------------------------------------------------
 # Azure Functions
@@ -31,9 +32,9 @@ git_check_tag_exists () {
     # arguments: $1 - repo_name , $2 - repo_tag
     echo "Check if tag $2, exists in Git repository $1" 
     if (GIT_DIR=./$1/.git git rev-parse $2 > /dev/null 2>&1); then
-        git_checkout_tag $1 $2
+        :
     else 
-        echo "Git tag $2 doesnt exists for repo $1"
+        echo "${RED} Git tag $2 doesnt exist for repo $1"
         exit
     fi
 }
@@ -44,11 +45,10 @@ git_checkout_tag() {
     if (GIT_DIR=./$1/.git git checkout tags/$2 > /dev/null 2>&1); then
         :
     else 
-        echo "Cant checkout git repostiory $1 with tag $2"
+        echo "${RED} Cant checkout git repostiory $1 with tag $2"
         exit
     fi
 }
-
 
 ## -------
 # Docker Functions
@@ -85,17 +85,40 @@ helm_change_tag() {
 }
 
 ## --------------------------------------------------------------------------------------------------------
-# 1. Get git submodules
+# 1. Get script flags
+ZIP=
+HELM=
+for arg in "$@"; do
+    case $arg in
+        -z | --zip) ZIP=true;;
+        -h | --helm) HELM=true;;
+    esac
+done
+
+## -------
+# 2. Get git submodules
 git_pull_all_services
 
 ## -------
-# 2. Create halbana folder 
-if [ "$1" == "--zip" ] || [ "$2" == "--zip" ]; then
-    mkdir $HALBANA_FOLDER # git: ADD CUSTOM PATH
+# 3. Foreach service in services.json file - Check if git tag exist
+for service in $(cat $JSON_FILE | jq -r '.[]| @base64') ; do
+    
+    # Get service name and tag from json file
+    service_tag=$(echo "$service" | base64 --decode | jq -r '.tag')
+    service_name=$(echo "$service" | base64 --decode | jq -r '.name')
+
+    git_check_tag_exists $service_name $service_tag
+done
+
+
+## -------
+# 4. Create halbana folder 
+if [[ $ZIP ]]; then
+    mkdir $HALBANA_FOLDER 
 fi
 
 ## -------
-# 3. Login to azure and set the azure conatiner registry
+# 5. Login to azure and set the azure conatiner registry
 echo "Logging Into Azure"
 az login
 echo "Logging Into Acr"
@@ -103,7 +126,7 @@ az acr login --n $AZURE_CONTAINER_REGISTRY_NAME
 
 
 ## -------
-# 4. Foreach service in services.json file
+# 6. Foreach service in services.json file - implement
 for service in $(cat $JSON_FILE | jq -r '.[]| @base64') ; do
     
     # Get service name and tag from json file
@@ -116,12 +139,12 @@ for service in $(cat $JSON_FILE | jq -r '.[]| @base64') ; do
         echo "Image: $service_name:$service_tag exists on Azure acr" 
     else 
         echo "Image $service_name $service_tag, does not exist on acr"
-        git_check_tag_exists $service_name $service_tag
+        git_checkout_tag $service_name $service_tag
         docker_build_and_push_image $service_name $service_tag
     fi
 
     # If this flag mentioned, Check the tags of the helm charts 
-    if [ "$1" == "--helm" ] || [ "$2" == "--helm" ]; then
+    if [[ $HELM ]]; then
          echo "Check if tag $service_tag exists in helm chart file $service_name..."
 
         # Change the helm chart tag image if not updated
@@ -131,14 +154,14 @@ for service in $(cat $JSON_FILE | jq -r '.[]| @base64') ; do
         fi
     fi
 
-    if [ "$1" == "--zip" ] || [ "$2" == "--zip" ]; then
+    if [[ $ZIP ]]; then
         docker_pull_and_save_image $service_name $service_tag
     fi
 done
 
 ## -------
-# 5. Zip halbana folder 
-if [ "$1" == "--zip" ] || [ "$2" == "--zip" ]; then
+# 7. Zip halbana folder 
+if [[ $ZIP ]]; then
     7z a $HALBANA_FOLDER.7z $HALBANA_FOLDER
     rm -r $HALBANA_FOLDER
 fi

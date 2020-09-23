@@ -7,9 +7,9 @@
 [submodule "delegation-service"]
 	path = delegation-service
 	url = https://github.com/meateam/delegation-service
-[submodule "donwload-service"]
-	path = donwload-service
-	url = https://github.com/meateam/download-service
+[submodule "download-service"]
+	path = download-service
+	url = https://github.com/meateam/download-service.git
 [submodule "drive-ui"]
 	path = drive-ui
 	url = https://github.com/meateam/drive-ui
