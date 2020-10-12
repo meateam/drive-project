@@ -1,5 +1,4 @@
 #!/bin/bash
-
 set -e # stop script execution on failure
 # set -x # debug option - show runing commands
 
@@ -11,8 +10,41 @@ AZURE_TEAM_NAME="meateam"                                                       
 AZURE_LOGIN_SERVER="$AZURE_CONTAINER_REGISTRY_NAME.azurecr.io/$AZURE_TEAM_NAME" # Insert azure login server
 DATE=$(date +"%d.%m")                                                           # The date of the execution
 HALBANA_FOLDER="../halbana-$DATE"
-RED=`tput setaf 1`
-NC=`tput sgr0` # No Color
+
+## --------------------------------------------------------------------------------------------------------
+# String formatters
+if [[ -t 1 ]]; then
+  tty_escape() { printf "\033[%sm" "$1"; }
+else
+  tty_escape() { :; }
+fi
+
+tty_mkbold() { tty_escape "1;$1"; }
+tty_underline="$(tty_escape "4;39")"
+tty_blue="$(tty_mkbold 34)"
+tty_red="$(tty_mkbold 31)"
+tty_green="$(tty_mkbold 32)"
+tty_bold="$(tty_mkbold 39)"
+tty_reset="$(tty_escape 0)"
+
+
+ohai() {
+  printf "${tty_blue}==>${tty_bold} %s${tty_reset}\n" "$1"
+}
+
+warn() {
+  printf "${tty_red}Warning${tty_reset}: %s\n" "$1"
+}
+
+success() {
+  printf "${tty_green}%s${tty_reset} \n" "$1"
+}
+
+
+abort() {
+  printf "${tty_red}%s\n${tty_reset}" "$1"
+  exit 1
+}
 
 ## --------------------------------------------------------------------------------------------------------
 # Azure Functions
@@ -25,7 +57,7 @@ azure_check_tag_exists () {
 ## -------
 # Git Functions
 git_pull_all_services () {
-    echo "Git pull submodules" 
+    ohai "Git pull submodules" 
     git pull --recurse-submodules
 }
 
@@ -35,8 +67,7 @@ git_check_tag_exists () {
     if (GIT_DIR=./$1/.git git rev-parse $2 > /dev/null 2>&1); then
         :
     else 
-        echo "${RED} Git tag $2 doesnt exist for repo $1"
-        exit
+        abort "Git tag $2 doesnt exist for repo $1"
     fi
 }
 
@@ -46,8 +77,7 @@ git_checkout_tag() {
     if (GIT_DIR=./$1/.git git checkout tags/$2 > /dev/null 2>&1); then
         :
     else 
-        echo "${RED} Cant checkout git repostiory $1 with tag $2"
-        exit
+        abort "Cant checkout git repostiory $1 with tag $2"
     fi
 }
 
@@ -76,13 +106,13 @@ docker_pull_and_save_image(){
 # Helm Functions
 helm_check_tag_exists() {
     # arguments: $1 - chart_name , $2 - chart_image_tag
-    helm show values z-helm/$1 | grep tag | grep $2 
+    helm inspect values z-helm/$1 | grep tag | grep $2 
 }
 
 helm_change_tag() {
     # arguments: $1 - chart_name , $2 - chart_image_tag
     if [[ $(cat z-helm/$1/values.yaml | sed -n 's/.*\(tag\).*/\1/p') == "" ]]; then
-        echo "${RED} Cant found tag attribute in helm chart $1 ${NC}"
+        warn "${RED} Cant found tag attribute in helm chart $1 ${NC}"
     else 
         echo "Changing the image tag for helm chart $1 to tag $2"
         sed -r "s/^(\s*tag\s*:\s*).*/\1\"${2}\"/" -i z-helm/$1/values.yaml 
@@ -106,6 +136,7 @@ git_pull_all_services
 
 ## -------
 # 3. Foreach service in services.json file - Check if git tag exist
+ohai "Check if services tags exist in git"
 for service in $(cat $JSON_FILE | jq -r '.[]| @base64') ; do
     
     # Get service name and tag from json file
@@ -119,31 +150,34 @@ done
 ## -------
 # 4. Create halbana folder 
 if [[ $ZIP ]]; then
+    ohai "Create halbana folder with the name $HALBANA_FOLDER"
     mkdir $HALBANA_FOLDER 
 fi
 
 ## -------
 # 5. Login to azure and set the azure conatiner registry
-echo "Logging Into Azure"
+ohai "Logging Into Azure"
 az login
-echo "Logging Into Acr"
+ohai "Logging Into Acr"
 az acr login --n $AZURE_CONTAINER_REGISTRY_NAME
 
 
 ## -------
 # 6. Foreach service in services.json file - implement
 for service in $(cat $JSON_FILE | jq -r '.[]| @base64') ; do
-    
+
     # Get service name and tag from json file
     service_tag=$(echo "$service" | base64 --decode | jq -r '.tag')
     service_name=$(echo "$service" | base64 --decode | jq -r '.name')
+
+    ohai "Service: $service_name"
 
     # Check if the tag exists in acr
     # If not, check if the tag exists on git, build an image and upload to acr
     if (azure_check_tag_exists $service_name $service_tag); then
         echo "Image: $service_name:$service_tag exists on Azure acr" 
     else 
-        echo "Image $service_name $service_tag, does not exist on acr"
+        warn "Image $service_name $service_tag, does not exist on acr"
         git_checkout_tag $service_name $service_tag
         docker_build_and_push_image $service_name $service_tag
     fi
@@ -170,3 +204,5 @@ if [[ $ZIP ]]; then
     7z a $HALBANA_FOLDER.7z $HALBANA_FOLDER
     rm -r $HALBANA_FOLDER
 fi
+
+success "DONE..."
