@@ -3,6 +3,7 @@
 set -e # stop script execution on failure
 # set -x # debug option - show runing commands
 
+
 ## --------------------------------------------------------------------------------------------------------
 # Globals variables
 JSON_FILE="services.prod.json"                                                  # Insert name of the json services file
@@ -10,8 +11,47 @@ AZURE_CONTAINER_REGISTRY_NAME="drivehub"                                        
 AZURE_TEAM_NAME="meateam"                                                       # Insert azure team
 AZURE_LOGIN_SERVER="$AZURE_CONTAINER_REGISTRY_NAME.azurecr.io/$AZURE_TEAM_NAME" # Insert azure login server
 DATE=$(date +"%d.%m")                                                           # The date of the execution
-HALBANA_FOLDER="../halbana-$DATE"
-RED=`tput setaf 1`
+HALBANA_FOLDER="../halbana-$DATE"                                               # The name of the halbana folder
+KBS_NAMESPACE="<namespace>"                                                     # The name of the kubernetes namespace
+KBS_DNS="<dns>"                                                                 # The name of the kubernetes dns
+HELM_DEPLOY_NAME="<release-name>"                                               # The name of the helm deployment release name
+HELM_DEPENDENCIES=true                                                          # If you want to reinstall helm dependencies - select true.
+
+## --------------------------------------------------------------------------------------------------------
+# String formatters
+if [[ -t 1 ]]; then
+  tty_escape() { printf "\033[%sm" "$1"; }
+else
+  tty_escape() { :; }
+fi
+
+tty_mkbold() { tty_escape "1;$1"; }
+tty_underline="$(tty_escape "4;39")"
+tty_blue="$(tty_mkbold 34)"
+tty_red="$(tty_mkbold 31)"
+tty_green="$(tty_mkbold 32)"
+tty_bold="$(tty_mkbold 39)"
+tty_reset="$(tty_escape 0)"
+
+
+msg() {
+  printf "${tty_blue}==>${tty_bold} %s${tty_reset}\n" "$1"
+}
+
+warn() {
+  printf "${tty_red}Warning${tty_reset}: %s\n" "$1"
+}
+
+success() {
+  printf "${tty_green}%s${tty_reset} \n" "$1"
+}
+
+
+abort() {
+  printf "${tty_red}%s\n${tty_reset}" "$1"
+  exit 1
+}
+
 
 ## --------------------------------------------------------------------------------------------------------
 # Azure Functions
@@ -24,7 +64,8 @@ azure_check_tag_exists () {
 ## -------
 # Git Functions
 git_pull_all_services () {
-    echo "Git pull submodules" 
+    msg "Git pull submodules" 
+
     git pull --recurse-submodules
 }
 
@@ -34,8 +75,7 @@ git_check_tag_exists () {
     if (GIT_DIR=./$1/.git git rev-parse $2 > /dev/null 2>&1); then
         :
     else 
-        echo "${RED} Git tag $2 doesnt exist for repo $1"
-        exit
+        abort "Git tag $2 doesnt exist for repo $1"
     fi
 }
 
@@ -45,8 +85,7 @@ git_checkout_tag() {
     if (GIT_DIR=./$1/.git git checkout tags/$2 > /dev/null 2>&1); then
         :
     else 
-        echo "${RED} Cant checkout git repostiory $1 with tag $2"
-        exit
+        abort "Cant checkout git repostiory $1 with tag $2"
     fi
 }
 
@@ -75,25 +114,33 @@ docker_pull_and_save_image(){
 # Helm Functions
 helm_check_tag_exists() {
     # arguments: $1 - chart_name , $2 - chart_image_tag
-    helm show values z-helm/$1 | grep tag | grep $2 
+    helm inspect values z-helm/$1 | grep tag | grep $2 
 }
 
 helm_change_tag() {
     # arguments: $1 - chart_name , $2 - chart_image_tag
-    echo "Changing the image tag for helm chart $1 to tag $2"
-    sed -r "s/^(\s*tag\s*:\s*).*/\1\"${2}\"/" -i z-helm/$1/values.yaml 
+    if [[ $(cat z-helm/$1/values.yaml | sed -n 's/.*\(tag\).*/\1/p') == "" ]]; then
+        warn "${RED} Cant found tag attribute in helm chart $1 ${NC}"
+    else 
+        echo "Changing the image tag for helm chart $1 to tag $2"
+        sed -r "s/^(\s*tag\s*:\s*).*/\1\"${2}\"/" -i z-helm/$1/values.yaml 
+    fi
 }
+
 
 ## --------------------------------------------------------------------------------------------------------
 # 1. Get script flags
-ZIP=
-HELM=
+ZIP=false
+HELM=false
+KBS=false
 for arg in "$@"; do
     case $arg in
         -z | --zip) ZIP=true;;
         -h | --helm) HELM=true;;
+        -k | --kubectl) KBS=true;;
     esac
 done
+
 
 ## -------
 # 2. Get git submodules
@@ -101,6 +148,7 @@ git_pull_all_services
 
 ## -------
 # 3. Foreach service in services.json file - Check if git tag exist
+msg "Check if services tags exist in git"
 for service in $(cat $JSON_FILE | jq -r '.[]| @base64') ; do
     
     # Get service name and tag from json file
@@ -113,55 +161,85 @@ done
 
 ## -------
 # 4. Create halbana folder 
-if [[ $ZIP ]]; then
+if ($ZIP); then
+    msg "Create halbana folder with the name $HALBANA_FOLDER"
     mkdir $HALBANA_FOLDER 
 fi
 
 ## -------
 # 5. Login to azure and set the azure conatiner registry
-echo "Logging Into Azure"
+msg "Logging Into Azure"
 az login
-echo "Logging Into Acr"
+msg "Logging Into Acr"
 az acr login --n $AZURE_CONTAINER_REGISTRY_NAME
 
 
 ## -------
 # 6. Foreach service in services.json file - implement
 for service in $(cat $JSON_FILE | jq -r '.[]| @base64') ; do
-    
     # Get service name and tag from json file
     service_tag=$(echo "$service" | base64 --decode | jq -r '.tag')
     service_name=$(echo "$service" | base64 --decode | jq -r '.name')
+
+    msg "Service: $service_name"
 
     # Check if the tag exists in acr
     # If not, check if the tag exists on git, build an image and upload to acr
     if (azure_check_tag_exists $service_name $service_tag); then
         echo "Image: $service_name:$service_tag exists on Azure acr" 
     else 
-        echo "Image $service_name $service_tag, does not exist on acr"
+        warn "Image $service_name $service_tag, does not exist on acr"
         git_checkout_tag $service_name $service_tag
         docker_build_and_push_image $service_name $service_tag
     fi
 
     # If this flag mentioned, Check the tags of the helm charts 
-    if [[ $HELM ]]; then
+    if ($HELM); then
          echo "Check if tag $service_tag exists in helm chart file $service_name..."
 
         # Change the helm chart tag image if not updated
         if [ -z "$(helm_check_tag_exists $service_name $service_tag)" ]; then
-
             helm_change_tag $service_name $service_tag
         fi
     fi
 
-    if [[ $ZIP ]]; then
+    if ($ZIP); then
         docker_pull_and_save_image $service_name $service_tag
     fi
 done
 
+
 ## -------
-# 7. Zip halbana folder 
-if [[ $ZIP ]]; then
+# 7. Update helm dependencies 
+if ($HELM && $HELM_DEPENDENCIES); then
+    msg "Update helm charts dependencies"
+    z-helm/helm-dep-up-umbrella.sh z-helm/helm-chart/
+fi
+
+## -------
+# 8. Zip halbana folder 
+if ($ZIP); then
+    msg "Zip halbana folder"
     7z a $HALBANA_FOLDER.7z $HALBANA_FOLDER
     rm -r $HALBANA_FOLDER
 fi
+
+## -------
+# 9. Deploy kubernetes
+if ($KBS); then
+    msg "Deploy kubernetes"
+    
+    # Change the helm chart tag image if not updated
+    if [[ $(helm list $HELM_DEPLOY_NAME | awk -v namespace="$KBS_NAMESPACE" '$11 != namespace {print $11}') ]]; then
+        abort "found an existing deployment with the same name: $HELM_DEPLOY_NAME, at namespace:$KBS_NAMESPACE"
+    fi
+
+    if [[ $(helm list --namespace=$KBS_NAMESPACE $HELM_DEPLOY_NAME) ]]; then        
+        helm del --purge $HELM_DEPLOY_NAME
+    fi
+
+    helm install z-helm/helm-chart/ --name=$HELM_DEPLOY_NAME --namespace=$KBS_NAMESPACE \
+    --set global.ingress.hosts[0]=$KBS_DNS.northeurope.cloudapp.azure.com
+fi
+
+success "DONE..."
