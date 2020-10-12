@@ -12,10 +12,10 @@ AZURE_TEAM_NAME="meateam"                                                       
 AZURE_LOGIN_SERVER="$AZURE_CONTAINER_REGISTRY_NAME.azurecr.io/$AZURE_TEAM_NAME" # Insert azure login server
 DATE=$(date +"%d.%m")                                                           # The date of the execution
 HALBANA_FOLDER="../halbana-$DATE"                                               # The name of the halbana folder
-KBS_NAMESPACE="netta"                                                      # The name of the kubernetes namespace
-KBS_DNS="kbs-netta"                                                                   # The name of the kubernetes dns
-HELM_DEPLOY_NAME="netta-charts"                                                 # The name of the helm deployment release name
-HELM_DEPENDENCIES=true
+KBS_NAMESPACE="<namespace>"                                                     # The name of the kubernetes namespace
+KBS_DNS="<dns>"                                                                 # The name of the kubernetes dns
+HELM_DEPLOY_NAME="<release-name>"                                               # The name of the helm deployment release name
+HELM_DEPENDENCIES=true                                                          # If you want to reinstall helm dependencies - select true.
 
 ## --------------------------------------------------------------------------------------------------------
 # String formatters
