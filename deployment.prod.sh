@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e # stop script execution on failure
-# set -x # debug option - show runing commands
+#set -x # debug option - show runing commands
 
 ## --------------------------------------------------------------------------------------------------------
 # Globals variables
@@ -9,7 +9,10 @@ AZURE_CONTAINER_REGISTRY_NAME="drivehub"                                        
 AZURE_TEAM_NAME="meateam"                                                       # Insert azure team
 AZURE_LOGIN_SERVER="$AZURE_CONTAINER_REGISTRY_NAME.azurecr.io/$AZURE_TEAM_NAME" # Insert azure login server
 DATE=$(date +"%d.%m")                                                           # The date of the execution
-HALBANA_FOLDER="../halbana-$DATE"
+HALBANA_FOLDER="../halbana-$DATE"                                               # The name of the halbana folder
+KBS_NAMESPACE=<namespace>                                                       # The name of the kubernetes namespace
+KBS_DNS=<dns>                                                                   # The name of the kubernetes dns
+HELM_DEPLOY_NAME=<release-name>                                                 # The name of the helm deployment release name
 
 ## --------------------------------------------------------------------------------------------------------
 # String formatters
@@ -119,14 +122,17 @@ helm_change_tag() {
     fi
 }
 
+
 ## --------------------------------------------------------------------------------------------------------
 # 1. Get script flags
 ZIP=
 HELM=
+KBS=
 for arg in "$@"; do
     case $arg in
         -z | --zip) ZIP=true;;
         -h | --helm) HELM=true;;
+        -k | --kubectl) KBS=true;;
     esac
 done
 
@@ -188,7 +194,6 @@ for service in $(cat $JSON_FILE | jq -r '.[]| @base64') ; do
 
         # Change the helm chart tag image if not updated
         if [ -z "$(helm_check_tag_exists $service_name $service_tag)" ]; then
-
             helm_change_tag $service_name $service_tag
         fi
     fi
@@ -198,11 +203,38 @@ for service in $(cat $JSON_FILE | jq -r '.[]| @base64') ; do
     fi
 done
 
+
 ## -------
-# 7. Zip halbana folder 
+# 7. Update helm dependencies 
+if [[ $HELM ]]; then
+    ohai "Update helm charts dependencies"
+    z-helm/helm-dep-up-umbrella.sh z-helm/helm-chart/
+fi
+
+## -------
+# 8. Zip halbana folder 
 if [[ $ZIP ]]; then
+    ohai "Zip halbana folder"
     7z a $HALBANA_FOLDER.7z $HALBANA_FOLDER
     rm -r $HALBANA_FOLDER
+fi
+
+## -------
+# 9. Deploy kubernetes
+if [[ $KBS ]]; then
+    ohai "Deploy kubernetes"
+    
+    # Change the helm chart tag image if not updated
+    if [[ $(helm list $HELM_DEPLOY_NAME | awk -v namespace="$KBS_NAMESPACE" '$11 != namespace {print $11}') ]]; then
+        abort "found an existing deployment with the same name: $HELM_DEPLOY_NAME, at namespace:$KBS_NAMESPACE"
+    fi
+
+    if [[ $(helm list --namespace=$KBS_NAMESPACE $HELM_DEPLOY_NAME) ]]; then        
+        helm del --purge $HELM_DEPLOY_NAME
+    fi
+
+    helm install z-helm/helm-chart/ --name=$HELM_DEPLOY_NAME --namespace=$KBS_NAMESPACE \
+    --set global.ingress.hosts[0]=$KBS_DNS.northeurope.cloudapp.azure.com
 fi
 
 success "DONE..."
