@@ -1,6 +1,8 @@
 #!/bin/bash
+
 set -e # stop script execution on failure
-#set -x # debug option - show runing commands
+# set -x # debug option - show runing commands
+
 
 ## --------------------------------------------------------------------------------------------------------
 # Globals variables
@@ -31,7 +33,7 @@ tty_bold="$(tty_mkbold 39)"
 tty_reset="$(tty_escape 0)"
 
 
-ohai() {
+msg() {
   printf "${tty_blue}==>${tty_bold} %s${tty_reset}\n" "$1"
 }
 
@@ -49,6 +51,7 @@ abort() {
   exit 1
 }
 
+
 ## --------------------------------------------------------------------------------------------------------
 # Azure Functions
 azure_check_tag_exists () {
@@ -60,14 +63,13 @@ azure_check_tag_exists () {
 ## -------
 # Git Functions
 git_pull_all_services () {
-    ohai "Git pull submodules" 
+    msg "Git pull submodules" 
+
     git pull --recurse-submodules
 }
 
 git_check_tag_exists () {
-    # arguments: $1 - repo_name , $2 - repo_tag
-    echo "Check if tag $2, exists in Git repository $1" 
-    if (GIT_DIR=./$1/.git git rev-parse $2 > /dev/null 2>&1); then
+    # arguments:ma./$1/.git git rev-parse $2 > /dev/null 2>&1); then
         :
     else 
         abort "Git tag $2 doesnt exist for repo $1"
@@ -142,7 +144,7 @@ git_pull_all_services
 
 ## -------
 # 3. Foreach service in services.json file - Check if git tag exist
-ohai "Check if services tags exist in git"
+msg "Check if services tags exist in git"
 for service in $(cat $JSON_FILE | jq -r '.[]| @base64') ; do
     
     # Get service name and tag from json file
@@ -156,27 +158,26 @@ done
 ## -------
 # 4. Create halbana folder 
 if [[ $ZIP ]]; then
-    ohai "Create halbana folder with the name $HALBANA_FOLDER"
+    msg "Create halbana folder with the name $HALBANA_FOLDER"
     mkdir $HALBANA_FOLDER 
 fi
 
 ## -------
 # 5. Login to azure and set the azure conatiner registry
-ohai "Logging Into Azure"
+msg "Logging Into Azure"
 az login
-ohai "Logging Into Acr"
+msg "Logging Into Acr"
 az acr login --n $AZURE_CONTAINER_REGISTRY_NAME
 
 
 ## -------
 # 6. Foreach service in services.json file - implement
 for service in $(cat $JSON_FILE | jq -r '.[]| @base64') ; do
-
     # Get service name and tag from json file
     service_tag=$(echo "$service" | base64 --decode | jq -r '.tag')
     service_name=$(echo "$service" | base64 --decode | jq -r '.name')
 
-    ohai "Service: $service_name"
+    msg "Service: $service_name"
 
     # Check if the tag exists in acr
     # If not, check if the tag exists on git, build an image and upload to acr
@@ -207,14 +208,14 @@ done
 ## -------
 # 7. Update helm dependencies 
 if [[ $HELM ]]; then
-    ohai "Update helm charts dependencies"
+    msg "Update helm charts dependencies"
     z-helm/helm-dep-up-umbrella.sh z-helm/helm-chart/
 fi
 
 ## -------
 # 8. Zip halbana folder 
 if [[ $ZIP ]]; then
-    ohai "Zip halbana folder"
+    msg "Zip halbana folder"
     7z a $HALBANA_FOLDER.7z $HALBANA_FOLDER
     rm -r $HALBANA_FOLDER
 fi
@@ -222,7 +223,7 @@ fi
 ## -------
 # 9. Deploy kubernetes
 if [[ $KBS ]]; then
-    ohai "Deploy kubernetes"
+    msg "Deploy kubernetes"
     
     # Change the helm chart tag image if not updated
     if [[ $(helm list $HELM_DEPLOY_NAME | awk -v namespace="$KBS_NAMESPACE" '$11 != namespace {print $11}') ]]; then
