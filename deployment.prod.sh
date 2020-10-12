@@ -12,9 +12,10 @@ AZURE_TEAM_NAME="meateam"                                                       
 AZURE_LOGIN_SERVER="$AZURE_CONTAINER_REGISTRY_NAME.azurecr.io/$AZURE_TEAM_NAME" # Insert azure login server
 DATE=$(date +"%d.%m")                                                           # The date of the execution
 HALBANA_FOLDER="../halbana-$DATE"                                               # The name of the halbana folder
-KBS_NAMESPACE=<namespace>                                                       # The name of the kubernetes namespace
-KBS_DNS=<dns>                                                                   # The name of the kubernetes dns
-HELM_DEPLOY_NAME=<release-name>                                                 # The name of the helm deployment release name
+KBS_NAMESPACE="netta"                                                      # The name of the kubernetes namespace
+KBS_DNS="kbs-netta"                                                                   # The name of the kubernetes dns
+HELM_DEPLOY_NAME="netta-charts"                                                 # The name of the helm deployment release name
+HELM_DEPENDENCIES=true
 
 ## --------------------------------------------------------------------------------------------------------
 # String formatters
@@ -69,7 +70,9 @@ git_pull_all_services () {
 }
 
 git_check_tag_exists () {
-    # arguments:ma./$1/.git git rev-parse $2 > /dev/null 2>&1); then
+    # arguments: $1 - repo_name , $2 - repo_tag
+    echo "Check if tag $2, exists in Git repository $1" 
+    if (GIT_DIR=./$1/.git git rev-parse $2 > /dev/null 2>&1); then
         :
     else 
         abort "Git tag $2 doesnt exist for repo $1"
@@ -127,9 +130,9 @@ helm_change_tag() {
 
 ## --------------------------------------------------------------------------------------------------------
 # 1. Get script flags
-ZIP=
-HELM=
-KBS=
+ZIP=false
+HELM=false
+KBS=false
 for arg in "$@"; do
     case $arg in
         -z | --zip) ZIP=true;;
@@ -137,6 +140,7 @@ for arg in "$@"; do
         -k | --kubectl) KBS=true;;
     esac
 done
+
 
 ## -------
 # 2. Get git submodules
@@ -157,7 +161,7 @@ done
 
 ## -------
 # 4. Create halbana folder 
-if [[ $ZIP ]]; then
+if ($ZIP); then
     msg "Create halbana folder with the name $HALBANA_FOLDER"
     mkdir $HALBANA_FOLDER 
 fi
@@ -190,7 +194,7 @@ for service in $(cat $JSON_FILE | jq -r '.[]| @base64') ; do
     fi
 
     # If this flag mentioned, Check the tags of the helm charts 
-    if [[ $HELM ]]; then
+    if ($HELM); then
          echo "Check if tag $service_tag exists in helm chart file $service_name..."
 
         # Change the helm chart tag image if not updated
@@ -199,7 +203,7 @@ for service in $(cat $JSON_FILE | jq -r '.[]| @base64') ; do
         fi
     fi
 
-    if [[ $ZIP ]]; then
+    if ($ZIP); then
         docker_pull_and_save_image $service_name $service_tag
     fi
 done
@@ -207,14 +211,14 @@ done
 
 ## -------
 # 7. Update helm dependencies 
-if [[ $HELM ]]; then
+if ($HELM && $HELM_DEPENDENCIES); then
     msg "Update helm charts dependencies"
     z-helm/helm-dep-up-umbrella.sh z-helm/helm-chart/
 fi
 
 ## -------
 # 8. Zip halbana folder 
-if [[ $ZIP ]]; then
+if ($ZIP); then
     msg "Zip halbana folder"
     7z a $HALBANA_FOLDER.7z $HALBANA_FOLDER
     rm -r $HALBANA_FOLDER
@@ -222,7 +226,7 @@ fi
 
 ## -------
 # 9. Deploy kubernetes
-if [[ $KBS ]]; then
+if ($KBS); then
     msg "Deploy kubernetes"
     
     # Change the helm chart tag image if not updated
