@@ -1,46 +1,46 @@
 dependencies:
   - name: web-ui
     version: 0.1.0
-    repository: https://github.com/meateam/drive-project/tree/master/z-helm/web-ui
+    repository: https://github.com/meateam/drive-project/tree/master/z-helm
   - name: api-gateway
     version: 0.1.0
-    repository: https://github.com/meateam/drive-project/tree/master/z-helm/api-gateway
+    repository: https://github.com/meateam/drive-project/tree/master/z-helm
   - name: delegation-service
     version: 0.1.0
-    repository: https://github.com/meateam/drive-project/tree/master/z-helm/delegation-service
+    repository: https://github.com/meateam/drive-project/tree/master/z-helm
   - name: download-service
     version: 0.1.0
-    repository: https://github.com/meateam/drive-project/tree/master/z-helm/download-service
+    repository: https://github.com/meateam/drive-project/tree/master/z-helm
   - name: upload-service
     version: 0.1.0
-    repository: https://github.com/meateam/drive-project/tree/master/z-helm/upload-service
+    repository: https://github.com/meateam/drive-project/tree/master/z-helm
   - name: file-service
     version: 0.1.0
-    repository: https://github.com/meateam/drive-project/tree/master/z-helm/file-service
+    repository: https://github.com/meateam/drive-project/tree/master/z-helm
   - name: authentication-service
     version: 0.1.0
-    repository: https://github.com/meateam/drive-project/tree/master/z-helm/authentication-service
+    repository: https://github.com/meateam/drive-project/tree/master/z-helm
   - name: user-service
     version: 0.1.0
-    repository: https://github.com/meateam/drive-project/tree/master/z-helm/user-service
+    repository: https://github.com/meateam/drive-project/tree/master/z-helm
   - name: permission-service
     version: 0.1.0
-    repository: https://github.com/meateam/drive-project/tree/master/z-helm/permission-service
+    repository: https://github.com/meateam/drive-project/tree/master/z-helm
   - name: permit-service
     version: 0.1.0
-    repository: https://github.com/meateam/drive-project/tree/master/z-helm/permit-service
+    repository: https://github.com/meateam/drive-project/tree/master/z-helm
   - name: test-saml-idp
     version: 0.1.0
-    repository: https://github.com/meateam/drive-project/tree/master/z-helm/test-saml-idp
+    repository: https://github.com/meateam/drive-project/tree/master/z-helm
   - name: redis
     version: 0.1.0
-    repository: https://github.com/meateam/drive-project/tree/master/z-helm/redis
+    repository: https://github.com/meateam/drive-project/tree/master/z-helm
   - name: search-service
     version: 0.1.0
-    repository: https://github.com/meateam/drive-project/tree/master/search-service
+    repository: https://github.com/meateam/drive-project/tree/master/z-helm
   - name: spike-service
     version: 0.1.0
-    repository: https://github.com/meateam/drive-project/tree/master/z-helm/spike-service
+    repository: https://github.com/meateam/drive-project/tree/master/z-helm
   - name: gotenberg
     version: 0.1.0
-    repository: https://github.com/meateam/drive-project/tree/master/gotenberg
+    repository: https://github.com/meateam/drive-project/tree/master/z-helm
