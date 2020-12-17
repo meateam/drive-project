@@ -63,7 +63,7 @@ azure_check_tag_exists () {
 git_pull_all_services () {
     msg "Git pull submodules" 
 
-    git pull --recurse-submodules
+    git submodule update --remote --merge
 }
 
 git_check_tag_exists () {
