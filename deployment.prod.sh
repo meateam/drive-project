@@ -12,9 +12,6 @@ AZURE_TEAM_NAME="meateam"                                                       
 AZURE_LOGIN_SERVER="$AZURE_CONTAINER_REGISTRY_NAME.azurecr.io/$AZURE_TEAM_NAME" # Insert azure login server
 DATE=$(date +"%d.%m")                                                           # The date of the execution
 HALBANA_FOLDER="../halbana-$DATE"                                               # The name of the halbana folder
-KBS_NAMESPACE="<namespace>"                                                     # The name of the kubernetes namespace
-KBS_DNS="<dns>"                                                                 # The name of the kubernetes dns
-HELM_DEPLOY_NAME="<release-name>"                                               # The name of the helm deployment release name
 HELM_DEPENDENCIES=true                                                          # If you want to reinstall helm dependencies - select true.
 
 ## --------------------------------------------------------------------------------------------------------
@@ -141,22 +138,25 @@ for arg in "$@"; do
     esac
 done
 
+if ($KBS); then
+    . kbs.env # load kubernetes env 
+fi
 
-## -------
+# -------
 # 2. Get git submodules
 git_pull_all_services
 
-## -------
-# 3. Foreach service in services.json file - Check if git tag exist
-msg "Check if services tags exist in git"
-for service in $(cat $JSON_FILE | jq -r '.[]| @base64') ; do
+# ## -------
+# # 3. Foreach service in services.json file - Check if git tag exist
+# msg "Check if services tags exist in git"
+# for service in $(cat $JSON_FILE | jq -r '.[]| @base64') ; do
     
-    # Get service name and tag from json file
-    service_tag=$(echo "$service" | base64 --decode | jq -r '.tag')
-    service_name=$(echo "$service" | base64 --decode | jq -r '.name')
+#     # Get service name and tag from json file
+#     service_tag=$(echo "$service" | base64 --decode | jq -r '.tag')
+#     service_name=$(echo "$service" | base64 --decode | jq -r '.name')
 
-    git_check_tag_exists $service_name $service_tag
-done
+#     git_check_tag_exists $service_name $service_tag
+# done
 
 
 ## -------
@@ -189,6 +189,7 @@ for service in $(cat $JSON_FILE | jq -r '.[]| @base64') ; do
         echo "Image: $service_name:$service_tag exists on Azure acr" 
     else 
         warn "Image $service_name $service_tag, does not exist on acr"
+        git_check_tag_exists $service_name $service_tag
         git_checkout_tag $service_name $service_tag
         docker_build_and_push_image $service_name $service_tag
     fi
@@ -229,15 +230,17 @@ fi
 if ($KBS); then
     msg "Deploy kubernetes"
     
-    # Change the helm chart tag image if not updated
+    # Check if an deployment name with the same name exist to another namespace
     if [[ $(helm list $HELM_DEPLOY_NAME | awk -v namespace="$KBS_NAMESPACE" '$11 != namespace {print $11}') ]]; then
         abort "found an existing deployment with the same name: $HELM_DEPLOY_NAME, at namespace:$KBS_NAMESPACE"
     fi
 
     if [[ $(helm list --namespace=$KBS_NAMESPACE $HELM_DEPLOY_NAME) ]]; then        
+        msg "delete helm purge existing deployment $HELM_DEPLOY_NAME"
         helm del --purge $HELM_DEPLOY_NAME
     fi
 
+    msg "helm install $HELM_DEPLOY_NAME"
     helm install z-helm/helm-chart/ --name=$HELM_DEPLOY_NAME --namespace=$KBS_NAMESPACE \
     --set global.ingress.hosts[0]=$KBS_DNS.northeurope.cloudapp.azure.com
 fi

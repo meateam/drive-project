@@ -31,6 +31,13 @@
   - If you want to use the zip option, you need to install p7zip: <br> `apt-get install p7zip `
 
 - **-k / --kubectl** - Reinstall helm charts in kubernetes.
-  - if you use this option you **must** specify the related fields in the script: <br> `(KBS_DNS, KBS_NAMESPACE, HELM_DEPLOY_NAME)`
+  - if you use this option you **must** specify the related fields in the file **kbs.env**: <br> `(KBS_DNS, KBS_NAMESPACE, HELM_DEPLOY_NAME)`
   - Configured kubernetes
   - Helm installed (v2.16.6)
+
+#### kbs.env file example:
+```
+KBS_NAMESPACE="yaron"            # The name of the kubernetes namespace
+KBS_DNS="kbs-yaron"              # The name of the kubernetes dns
+HELM_DEPLOY_NAME="yaron-deploy"  # Helm deployment name
+```

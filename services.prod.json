@@ -15,6 +15,10 @@
         "tag": "v2.0.0"
     },
     {
+        "name": "drive-ui",
+        "tag": "v2.0.2"
+    },
+    {
         "name": "file-service",
         "tag": "v2.0.0"
     },
@@ -41,9 +45,5 @@
     {
         "name": "user-service",
         "tag": "v2.0.0"
-    },
-    {
-        "name": "drive-ui",
-        "tag": "v2.0.2"
     }
 ]
