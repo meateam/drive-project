@@ -34,6 +34,3 @@
 [submodule "user-service"]
 	path = user-service
 	url = https://github.com/meateam/user-service
-[submodule "web-ui"]
-	path = web-ui
-	url = https://github.com/meateam/web-ui
