@@ -1,18 +1,19 @@
 #!/bin/bash
 
 set -e # stop script execution on failure
+
 # set -x # debug option - show runing commands
 
 
 ## --------------------------------------------------------------------------------------------------------
 # Globals variables
-JSON_FILE="services.prod.json"                                                  # Insert name of the json services file
 AZURE_CONTAINER_REGISTRY_NAME="drivehub"                                        # Insert azure conatiner registry name
 AZURE_TEAM_NAME="meateam"                                                       # Insert azure team
 AZURE_LOGIN_SERVER="$AZURE_CONTAINER_REGISTRY_NAME.azurecr.io/$AZURE_TEAM_NAME" # Insert azure login server
 DATE=$(date +"%d.%m")                                                           # The date of the execution
 HALBANA_FOLDER="../halbana-$DATE"                                               # The name of the halbana folder
-HELM_DEPENDENCIES=true                                                          # If you want to reinstall helm dependencies - select true.
+
+. deploy.env # load script env 
 
 ## --------------------------------------------------------------------------------------------------------
 # String formatters
@@ -130,33 +131,35 @@ helm_change_tag() {
 ZIP=false
 HELM=false
 KBS=false
+GIT=false
+FORCE=false
 for arg in "$@"; do
     case $arg in
         -z | --zip) ZIP=true;;
         -h | --helm) HELM=true;;
         -k | --kubectl) KBS=true;;
+        -g | --git) GIT=true;;
+        -f | --force) FORCE=true;;
     esac
 done
 
-if ($KBS); then
-    . kbs.env # load kubernetes env 
-fi
-
 # -------
-# 2. Get git submodules
-git_pull_all_services
+if ($GIT); then
+    # 2. Get git submodules
+    git_pull_all_services
 
-# ## -------
-# # 3. Foreach service in services.json file - Check if git tag exist
-# msg "Check if services tags exist in git"
-# for service in $(cat $JSON_FILE | jq -r '.[]| @base64') ; do
-    
-#     # Get service name and tag from json file
-#     service_tag=$(echo "$service" | base64 --decode | jq -r '.tag')
-#     service_name=$(echo "$service" | base64 --decode | jq -r '.name')
+    ## -------
+    # 3. Foreach service in services.json file - Check if git tag exist
+    msg "Check if services tags exist in git"
+    for service in $(cat $JSON_FILE | jq -r '.[]| @base64') ; do
+        
+        # Get service name and tag from json file
+        service_tag=$(echo "$service" | base64 --decode | jq -r '.tag')
+        service_name=$(echo "$service" | base64 --decode | jq -r '.name')
 
-#     git_check_tag_exists $service_name $service_tag
-# done
+        git_check_tag_exists $service_name $service_tag
+    done
+fi
 
 
 ## -------
@@ -187,10 +190,16 @@ for service in $(cat $JSON_FILE | jq -r '.[]| @base64') ; do
     # If not, check if the tag exists on git, build an image and upload to acr
     if (azure_check_tag_exists $service_name $service_tag); then
         echo "Image: $service_name:$service_tag exists on Azure acr" 
+
+        if ($FORCE); then
+            docker_build_and_push_image $service_name $service_tag
+        fi
     else 
         warn "Image $service_name $service_tag, does not exist on acr"
-        git_check_tag_exists $service_name $service_tag
-        git_checkout_tag $service_name $service_tag
+        if ($GIT); then
+            git_check_tag_exists $service_name $service_tag
+            git_checkout_tag $service_name $service_tag
+        fi
         docker_build_and_push_image $service_name $service_tag
     fi
 

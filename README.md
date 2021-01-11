@@ -7,8 +7,8 @@
   ```
   apt-get install jq
   ```
+- Configure deploy.env file - [example](#deploy.env-file-example)
 
-- If your'e working on a local branch, make sure that your branch has published.
 
 ---
 
@@ -19,25 +19,33 @@
   Run Command:
 
   ```
-  bash ./deployment.prod.sh
+  bash ./deployment.sh [flags]
   ```
 
-#### Available Options:
+#### Available Flags:
 
 - **-h / --helm** - Run and update the z-helm charts tags
-  - Helm installed (v2.16.6)
+  - Current helm installed (v2.16.6)
 - **-z / --zip** - Run and make a zip of the images
 
-  - If you want to use the zip option, you need to install p7zip: <br> `apt-get install p7zip `
+  - If you want to use the zip option, you must install p7zip package: 
+    ```
+    apt-get install p7zip 
+    ```
 
 - **-k / --kubectl** - Reinstall helm charts in kubernetes.
-  - if you use this option you **must** specify the related fields in the file **kbs.env**: <br> `(KBS_DNS, KBS_NAMESPACE, HELM_DEPLOY_NAME)`
+  - if you use this option you **must** specify the related fields in the file **deploy.env**: `(KBS_DNS, KBS_NAMESPACE, HELM_DEPLOY_NAME)`
   - Configured kubernetes
   - Helm installed (v2.16.6)
-
-#### kbs.env file example:
+- **-g | --git** - git checkout all services tags
+- **-f | --force** - force rebuild local images 
+---
+## deploy.env file example:
 ```
-KBS_NAMESPACE="yaron"            # The name of the kubernetes namespace
-KBS_DNS="kbs-yaron"              # The name of the kubernetes dns
-HELM_DEPLOY_NAME="yaron-deploy"  # Helm deployment name
+KBS_NAMESPACE="yaron"           # The name of the k8s namespace
+KBS_DNS="kbs-yaron"             # The name of the k8s dns
+HELM_DEPLOY_NAME="yaron-deploy" # Helm deployment name
+JSON_FILE="services.dev.json"   # name of json services file
+HELM_DEPENDENCIES=true          # reinstall helm dependencies
+
 ```

@@ -1,0 +1,49 @@
+[{
+        "name": "api-gateway",
+        "tag": "develop"
+    },
+    {
+        "name": "authentication-service",
+        "tag": "develop"
+    },
+    {
+        "name": "delegation-service",
+        "tag": "develop"
+    },
+    {
+        "name": "download-service",
+        "tag": "develop"
+    },
+    {
+        "name": "drive-ui",
+        "tag": "develop"
+    },
+    {
+        "name": "file-service",
+        "tag": "develop"
+    },
+    {
+        "name": "permission-service",
+        "tag": "develop"
+    },
+    {
+        "name": "permit-service",
+        "tag": "develop"
+    },
+    {
+        "name": "search-service",
+        "tag": "develop"
+    },
+    {
+        "name": "spike-service",
+        "tag": "develop"
+    },
+    {
+        "name": "upload-service",
+        "tag": "develop"
+    },
+    {
+        "name": "user-service",
+        "tag": "develop"
+    }
+]

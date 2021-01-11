@@ -1,49 +1,49 @@
 [{
-        "name": "api-gateway",
-        "tag": "v2.0.0"
-    },
-    {
-        "name": "authentication-service",
-        "tag": "v2.0.0"
-    },
-    {
-        "name": "delegation-service",
-        "tag": "v2.0.0"
-    },
-    {
-        "name": "download-service",
-        "tag": "v2.0.0"
-    },
-    {
-        "name": "drive-ui",
-        "tag": "v2.0.2"
-    },
-    {
-        "name": "file-service",
-        "tag": "v2.0.0"
-    },
-    {
-        "name": "permission-service",
-        "tag": "v2.0.0"
-    },
-    {
-        "name": "permit-service",
-        "tag": "v2.0.0"
-    },
-    {
-        "name": "search-service",
-        "tag": "v2.0.0"
-    },
-    {
-        "name": "spike-service",
-        "tag": "v2.0.0"
-    },
-    {
-        "name": "upload-service",
-        "tag": "v2.0.0"
-    },
-    {
-        "name": "user-service",
-        "tag": "v2.0.0"
-    }
+    "name": "api-gateway",
+    "tag": "v2.3.1"
+},
+{
+    "name": "authentication-service",
+    "tag": "v2.1.0"
+},
+{
+    "name": "delegation-service",
+    "tag": "v2.0.0"
+},
+{
+    "name": "download-service",
+    "tag": "v2.0.0"
+},
+{
+    "name": "drive-ui",
+    "tag": "v3.0.0"
+},
+{
+    "name": "file-service",
+    "tag": "v3.0.0"
+},
+{
+    "name": "permission-service",
+    "tag": "v2.0.0"
+},
+{
+    "name": "permit-service",
+    "tag": "v2.0.0"
+},
+{
+    "name": "search-service",
+    "tag": "v2.0.0"
+},
+{
+    "name": "spike-service",
+    "tag": "v2.0.0"
+},
+{
+    "name": "upload-service",
+    "tag": "v2.0.0"
+},
+{
+    "name": "user-service",
+    "tag": "v2.1.0"
+}
 ]
