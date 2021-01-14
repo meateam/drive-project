@@ -1,6 +1,6 @@
 [{
     "name": "api-gateway",
-    "tag": "v2.3.1"
+    "tag": "v3.0.0"
 },
 {
     "name": "authentication-service",

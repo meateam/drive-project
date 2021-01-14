@@ -1,14 +1,13 @@
 version: "2.1"
 services:
   drive-ui:
-    image: "drivehub.azurecr.io/meateam/drive-ui:v3.0.0"
+    image: "drivehub.azurecr.io/meateam/drive-ui:develop"
     ports:
       - "80:80"
     depends_on:
       - api-gateway
   api-gateway:
-    image: api-gateway
-    build: ./api-gateway/
+    image: "drivehub.azurecr.io/meateam/api-gateway:develop"
     env_file:
       - ./kdrive.env
     ports:
@@ -31,7 +30,7 @@ services:
       - ./kdrive.env
     command: server /data
   upload-service:
-    image: "drivehub.azurecr.io/meateam/upload-service:v2.0.0"
+    image: "drivehub.azurecr.io/meateam/upload-service:develop"
     env_file:
       - ./kdrive.env
     depends_on:
@@ -39,7 +38,7 @@ services:
     ports:
       - "8081:8080"
   download-service:
-    image: "drivehub.azurecr.io/meateam/download-service:v2.0.0"
+    image: "drivehub.azurecr.io/meateam/download-service:develop"
     env_file:
       - ./kdrive.env
     ports:
@@ -47,7 +46,7 @@ services:
     depends_on:
       - minio
   file-service:
-    image: "drivehub.azurecr.io/meateam/file-service:v3.0.0"
+    image: "drivehub.azurecr.io/meateam/file-service:develop"
     env_file:
       - ./kdrive.env
     ports:
@@ -63,7 +62,8 @@ services:
     depends_on:
       - minio
   authentication-service:
-    image: "drivehub.azurecr.io/meateam/authentication-service:v2.0.0"
+    image: authentication-service
+    build: ./authentication-service/
     ports:
       - "8084:8080"
     env_file:
@@ -78,7 +78,7 @@ services:
     env_file:
       - ./kdrive.env
   user-service:
-    image: "drivehub.azurecr.io/meateam/user-service:v2.1.0"
+    image: "drivehub.azurecr.io/meateam/user-service:develop"
     ports:
       - "8086:8080"
     env_file:
@@ -91,7 +91,7 @@ services:
     ports:
       - "6379:6379"
   permission-service:
-    image: "drivehub.azurecr.io/meateam/permission-service:v2.0.0"
+    image: "drivehub.azurecr.io/meateam/permission-service:develop"
     ports:
       - "8087:8080"
     env_file:
@@ -99,7 +99,7 @@ services:
     depends_on:
       - mongo
   search-service:
-    image: "drivehub.azurecr.io/meateam/search-service:v2.0.0"
+    image: "drivehub.azurecr.io/meateam/search-service:develop"
     env_file:
       - ./kdrive.env
     ports:
@@ -132,15 +132,15 @@ services:
       interval: 5s
       timeout: 10s
       retries: 5
-  kibana:
-    image: "docker.elastic.co/kibana/kibana:7.5.0"
-    container_name: kibana
-    ports:
-      - "5601:5601"
-    depends_on:
-      - elasticsearch
+  # kibana:
+  #   image: "docker.elastic.co/kibana/kibana:7.5.0"
+  #   container_name: kibana
+  #   ports:
+  #     - "5601:5601"
+  #   depends_on:
+  #     - elasticsearch
   spike-service:
-    image: "drivehub.azurecr.io/meateam/spike-service:v2.0.0"
+    image: "drivehub.azurecr.io/meateam/spike-service:develop"
     env_file:
       - ./kdrive.env
     depends_on:
@@ -148,13 +148,13 @@ services:
     ports:
       - "8090:8080"
   delegation-service:
-    image: "drivehub.azurecr.io/meateam/delegation-service:v2.0.0"
+    image: "drivehub.azurecr.io/meateam/delegation-service:develop"
     ports:
       - "8091:8080"
     env_file:
       - ./kdrive.env
   permit-service:
-    image: "drivehub.azurecr.io/meateam/permit-service:v2.0.0"
+    image: "drivehub.azurecr.io/meateam/permit-service:develop"
     env_file:
       - ./kdrive.env
     ports:
