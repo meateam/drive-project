@@ -34,3 +34,6 @@
 [submodule "user-service"]
 	path = user-service
 	url = https://github.com/meateam/user-service
+[submodule "listener-service"]
+	path = listener-service
+	url = https://github.com/meateam/listener-service/
