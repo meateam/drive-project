@@ -5,17 +5,19 @@
 replicaCount: 1
 
 image:
-  tag: "v2.1.0"
+  tag: "latest"
 
-nameOverride: "user-service"
-fullnameOverride: "user-service"
+nameOverride: "rabbitmq"
+fullnameOverride: "rabbitmq"
+rabbitmqManagerPort: 15672
+rabbitmqNodePort : 5672
 deployment:
   health:
     enabled: true
     checks:
       livenessProbe:
         exec:
-          command: ["/bin/grpc_health_probe", "-addr=:8080"]
+          command: ["rabbitmq-diagnostics", "check_running"]
         initialDelaySeconds: 5
         periodSeconds: 5
         timeoutSeconds: 1
@@ -23,36 +25,35 @@ deployment:
         failureThreshold: 3
       readinessProbe:
         exec:
-          command: ["/bin/grpc_health_probe", "-addr=:8080"]
+          command: ["rabbitmq-diagnostics", "check_running"]
         initialDelaySeconds: 5
         periodSeconds: 5
         timeoutSeconds: 1
         successThreshold: 1
         failureThreshold: 3
-service:
-  type: ClusterIP
-  port: 8080
-  targetPort: 8080
+
+
 
 ingress:
-  enabled: false
+  enabled: true
+  # annotations: {nginx.ingress.kubernetes.io/rewrite-target: /rabbit/$1}
 
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
 
-resources:
+resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  limits:
-   cpu: 100m
-   memory: 256Mi
-  requests:
-   cpu: 50m
-   memory: 256Mi
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
 
 nodeSelector: {}
 

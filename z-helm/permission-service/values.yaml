@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  tag: "v2.0.0"
+  tag: "updated-at"
 
 nameOverride: "permission-service"
 fullnameOverride: "permission-service"
@@ -33,6 +33,7 @@ service:
   type: ClusterIP
   port: 8080
   targetPort: 8080
+  
 
 ingress:
   enabled: false

@@ -44,3 +44,10 @@ dependencies:
   - name: gotenberg
     version: 0.1.0
     repository: file://../gotenberg
+  - name: listener-service
+    version: 0.1.0
+    repository: file://../listener-service
+  - name: rabbitmq
+    version: 0.1.0
+    repository: file://../rabbitmq
+
