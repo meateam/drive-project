@@ -15,7 +15,7 @@ deployment:
     checks:
       livenessProbe:
         exec:
-          command: ["/bin/grpc_health_probe", "-addr=:8080", "-service=listener-service"]
+          command: ["/bin/grpc_health_probe", "-addr=:8080"]
         initialDelaySeconds: 15
         periodSeconds: 15
         timeoutSeconds: 1
@@ -23,7 +23,7 @@ deployment:
         failureThreshold: 3
       readinessProbe:
         exec:
-          command: ["/bin/grpc_health_probe", "-addr=:8080",  "-service=listener-service"]
+          command: ["/bin/grpc_health_probe", "-addr=:8080"]
         initialDelaySeconds: 15
         periodSeconds: 15
         timeoutSeconds: 1

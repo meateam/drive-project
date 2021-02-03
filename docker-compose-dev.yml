@@ -3,11 +3,12 @@ services:
   drive-ui:
     image: "drivehub.azurecr.io/meateam/drive-ui:develop"
     ports:
-      - "80:80"
+      - "3005:80"
     depends_on:
       - api-gateway
   api-gateway:
-    image: "drivehub.azurecr.io/meateam/api-gateway:develop"
+    image: api-gateway
+    build: ./api-gateway/
     env_file:
       - ./kdrive.env
     ports:
@@ -104,9 +105,9 @@ services:
       - ./kdrive.env
     ports:
       - "8088:8080"
-    depends_on:
-      elasticsearch:
-        condition: service_healthy
+    # depends_on:
+    #   elasticsearch:
+    #     condition: service_healthy
   gotenberg-service:
     image: "drivehub.azurecr.io/meateam/gotenberg:6"
     env_file:
@@ -162,3 +163,19 @@ services:
     depends_on:
       - mongo
       - spike-service
+  listener-service:
+    image: "drivehub.azurecr.io/meateam/listener-service:develop"
+    env_file:
+      - ./kdrive.env
+    ports:
+      - "8093:8080"
+    depends_on:
+      - mongo
+      - rabbitmq
+  rabbitmq:
+    image: "drivehub.azurecr.io/meateam/rabbitmq:latest"
+    env_file:
+      - ./kdrive.env
+    ports:
+      - "15672:15672"
+      - "5672:5672"
