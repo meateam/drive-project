@@ -5,30 +5,30 @@
 replicaCount: 1
 
 image:
-  tag: "develop"
+  tag: "latest"
 
-nameOverride: "download-service"
-fullnameOverride: "download-service"
-deployment:
-  health:
-    enabled: true
-    checks:
-      livenessProbe:
-        exec:
-          command: ["/bin/grpc_health_probe", "-addr=:8080"]
-        initialDelaySeconds: 5
-        periodSeconds: 5
-        timeoutSeconds: 1
-        successThreshold: 1
-        failureThreshold: 3
-      readinessProbe:
-        exec:
-          command: ["/bin/grpc_health_probe", "-addr=:8080"]
-        initialDelaySeconds: 5
-        periodSeconds: 5
-        timeoutSeconds: 1
-        successThreshold: 1
-        failureThreshold: 3
+nameOverride: "advanced-search-service"
+fullnameOverride: "advanced-search-service"
+# deployment:
+#   health:
+#     enabled: true
+#     checks:
+#       livenessProbe:
+#         exec:
+#           command: ["/bin/grpc_health_probe", "-addr=:8080"]
+#         initialDelaySeconds: 5
+#         periodSeconds: 5
+#         timeoutSeconds: 1
+#         successThreshold: 1
+#         failureThreshold: 3
+#       readinessProbe:
+#         exec:
+#           command: ["/bin/grpc_health_probe", "-addr=:8080"]
+#         initialDelaySeconds: 5
+#         periodSeconds: 5
+#         timeoutSeconds: 1
+#         successThreshold: 1
+#         failureThreshold: 3
 service:
   type: ClusterIP
   port: 8080
@@ -48,11 +48,11 @@ resources:
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   limits:
-   cpu: 200m
-   memory: 1024Mi
+   cpu: 100m
+   memory: 256Mi
   requests:
-   cpu: 200m
-   memory: 512Mi
+   cpu: 50m
+   memory: 256Mi
 
 nodeSelector: {}
 

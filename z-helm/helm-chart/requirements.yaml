@@ -50,4 +50,24 @@ dependencies:
   - name: rabbitmq
     version: 0.1.0
     repository: file://../rabbitmq
+  - name: manager-service
+    version: 0.1.0
+    repository: file://../manager-service
+  - name: drive-service
+    version: 0.1.0
+    repository: file://../drive-service
+  - name: delete-service
+    version: 0.1.0
+    repository: file://../delete-service
+  - name: elastic-service
+    version: 0.1.0
+    repository: file://../elastic-service
+  - name: parsing-service
+    version: 0.1.0
+    repository: file://../parsing-service
+  - name: advanced-search-service
+    version: 0.1.0
+    repository: file://../advanced-search-service
+      
 
+  

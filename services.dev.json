@@ -49,5 +49,9 @@
     {
         "name": "listener-service",
         "tag": "develop"
+    },
+    {
+        "name": "manager-service",
+        "tag": "develop"
     }
 ]
