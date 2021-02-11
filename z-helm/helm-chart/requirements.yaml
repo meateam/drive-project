@@ -50,4 +50,7 @@ dependencies:
   - name: rabbitmq
     version: 0.1.0
     repository: file://../rabbitmq
+  - name: dropbox-service
+    version: 0.1.0
+    repository: file://../dropbox-service
 
