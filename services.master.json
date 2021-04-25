@@ -1,0 +1,53 @@
+[{
+    "name": "api-gateway",
+    "tag": "master"
+},
+{
+    "name": "authentication-service",
+    "tag": "master"
+},
+{
+    "name": "delegation-service",
+    "tag": "master"
+},
+{
+    "name": "download-service",
+    "tag": "master"
+},
+{
+    "name": "drive-ui",
+    "tag": "master"
+},
+{
+    "name": "file-service",
+    "tag": "master"
+},
+{
+    "name": "permission-service",
+    "tag": "master"
+},
+{
+    "name": "permit-service",
+    "tag": "master"
+},
+{
+    "name": "search-service",
+    "tag": "master"
+},
+{
+    "name": "spike-service",
+    "tag": "master"
+},
+{
+    "name": "upload-service",
+    "tag": "master"
+},
+{
+    "name": "user-service",
+    "tag": "master"
+},
+{
+    "name": "listener-service",
+    "tag": "master"
+}
+]
