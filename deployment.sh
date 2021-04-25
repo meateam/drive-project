@@ -133,6 +133,7 @@ HELM=false
 KBS=false
 GIT=false
 FORCE=false
+ACR=true
 for arg in "$@"; do
     case $arg in
         -z | --zip) ZIP=true;;
@@ -140,6 +141,7 @@ for arg in "$@"; do
         -k | --kubectl) KBS=true;;
         -g | --git) GIT=true;;
         -f | --force) FORCE=true;;
+        --noacr ) ACR=false;;
     esac
 done
 
@@ -171,11 +173,12 @@ fi
 
 ## -------
 # 5. Login to azure and set the azure conatiner registry
-msg "Logging Into Azure"
-az login
-msg "Logging Into Acr"
-az acr login --n $AZURE_CONTAINER_REGISTRY_NAME
-
+if ($ACR); then
+    msg "Logging Into Azure"
+    az login
+    msg "Logging Into Acr"
+    az acr login --n $AZURE_CONTAINER_REGISTRY_NAME
+fi
 
 ## -------
 # 6. Foreach service in services.json file - implement
@@ -188,19 +191,21 @@ for service in $(cat $JSON_FILE | jq -r '.[]| @base64') ; do
 
     # Check if the tag exists in acr
     # If not, check if the tag exists on git, build an image and upload to acr
-    if (azure_check_tag_exists $service_name $service_tag); then
-        echo "Image: $service_name:$service_tag exists on Azure acr" 
+    if ($ACR); then
+        if (azure_check_tag_exists $service_name $service_tag); then
+            echo "Image: $service_name:$service_tag exists on Azure acr" 
 
-        if ($FORCE); then
+            if ($FORCE); then
+                docker_build_and_push_image $service_name $service_tag
+            fi
+        else 
+            warn "Image $service_name $service_tag, does not exist on acr"
+            if ($GIT); then
+                git_check_tag_exists $service_name $service_tag
+                git_checkout_tag $service_name $service_tag
+            fi
             docker_build_and_push_image $service_name $service_tag
         fi
-    else 
-        warn "Image $service_name $service_tag, does not exist on acr"
-        if ($GIT); then
-            git_check_tag_exists $service_name $service_tag
-            git_checkout_tag $service_name $service_tag
-        fi
-        docker_build_and_push_image $service_name $service_tag
     fi
 
     # If this flag mentioned, Check the tags of the helm charts 
