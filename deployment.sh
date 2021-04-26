@@ -133,7 +133,7 @@ HELM=false
 KBS=false
 GIT=false
 FORCE=false
-ACR=true
+ACR=false
 for arg in "$@"; do
     case $arg in
         -z | --zip) ZIP=true;;
@@ -141,7 +141,7 @@ for arg in "$@"; do
         -k | --kubectl) KBS=true;;
         -g | --git) GIT=true;;
         -f | --force) FORCE=true;;
-        --noacr ) ACR=false;;
+        -a | --acr ) ACR=true;;
     esac
 done
 
@@ -175,9 +175,7 @@ fi
 # 5. Login to azure and set the azure conatiner registry
 if ($ACR); then
     msg "Logging Into Azure"
-    az login
-    msg "Logging Into Acr"
-    az acr login --n $AZURE_CONTAINER_REGISTRY_NAME
+    docker login  drivehub.azurecr.io -u $ACR_USER -p $ACR_PASS
 fi
 
 ## -------
