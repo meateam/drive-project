@@ -5,10 +5,10 @@
 replicaCount: 1
 
 image:
-  tag: "v2.1.0"
+  tag: 'develop'
 
-nameOverride: "authentication-service"
-fullnameOverride: "authentication-service"
+nameOverride: 'authentication-service'
+fullnameOverride: 'authentication-service'
 deployment:
   health:
     enabled: true
@@ -50,11 +50,11 @@ resources:
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   limits:
-   cpu: 100m
-   memory: 256Mi
+    cpu: 100m
+    memory: 256Mi
   requests:
-   cpu: 50m
-   memory: 256Mi
+    cpu: 50m
+    memory: 256Mi
 
 nodeSelector: {}
 

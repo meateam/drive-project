@@ -40,3 +40,6 @@
 [submodule "hi-service"]
 	path = hi-service
 	url = https://github.com/meateam/hi-service.git
+[submodule "dropbox-service"]
+	path = dropbox-service
+	url = https://github.com/meateam/dropbox-service
