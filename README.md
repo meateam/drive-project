@@ -47,5 +47,7 @@ KBS_DNS="kbs-yaron"             # The name of the k8s dns
 HELM_DEPLOY_NAME="yaron-deploy" # Helm deployment name
 JSON_FILE="services.dev.json"   # name of json services file
 HELM_DEPENDENCIES=true          # reinstall helm dependencies
+ACR_PASS=""                     # acr password from drivehub Access keys, in azure
+
 
 ```

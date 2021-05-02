@@ -175,7 +175,7 @@ fi
 # 5. Login to azure and set the azure conatiner registry
 if ($ACR); then
     msg "Logging Into Azure"
-    docker login  drivehub.azurecr.io -u $ACR_USER -p $ACR_PASS
+    docker login  drivehub.azurecr.io -u $AZURE_CONTAINER_REGISTRY_NAME -p $ACR_PASS
 fi
 
 ## -------
