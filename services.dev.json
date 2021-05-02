@@ -7,10 +7,6 @@
         "tag": "develop"
     },
     {
-        "name": "delegation-service",
-        "tag": "develop"
-    },
-    {
         "name": "download-service",
         "tag": "develop"
     },
@@ -24,10 +20,6 @@
     },
     {
         "name": "permission-service",
-        "tag": "develop"
-    },
-    {
-        "name": "permit-service",
         "tag": "develop"
     },
     {
@@ -48,6 +40,10 @@
     },
     {
         "name": "listener-service",
+        "tag": "develop"
+    },
+    {
+        "name": "dropbox-service",
         "tag": "develop"
     }
 ]

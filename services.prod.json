@@ -7,8 +7,8 @@
     "tag": "v2.1.0"
 },
 {
-    "name": "delegation-service",
-    "tag": "v2.0.0"
+    "name": "dropbox-service",
+    "tag": "add-cts-intergation"
 },
 {
     "name": "download-service",
@@ -25,10 +25,6 @@
 {
     "name": "permission-service",
     "tag": "v3.1.1"
-},
-{
-    "name": "permit-service",
-    "tag": "v2.0.0"
 },
 {
     "name": "search-service",

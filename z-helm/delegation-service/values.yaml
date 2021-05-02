@@ -7,25 +7,25 @@ replicaCount: 1
 image:
   tag: "develop"
 
-nameOverride: "listener-service"
-fullnameOverride: "listener-service"
+nameOverride: "delegation-service"
+fullnameOverride: "delegation-service"
 deployment:
   health:
     enabled: true
     checks:
       livenessProbe:
         exec:
-          command: ["/bin/grpc_health_probe", "-addr=:8080", "-service=listener-service"]
-        initialDelaySeconds: 15
-        periodSeconds: 15
+          command: ["/bin/grpc_health_probe", "-addr=:8080"]
+        initialDelaySeconds: 5
+        periodSeconds: 5
         timeoutSeconds: 1
         successThreshold: 1
         failureThreshold: 3
       readinessProbe:
         exec:
-          command: ["/bin/grpc_health_probe", "-addr=:8080",  "-service=listener-service"]
-        initialDelaySeconds: 15
-        periodSeconds: 15
+          command: ["/bin/grpc_health_probe", "-addr=:8080"]
+        initialDelaySeconds: 5
+        periodSeconds: 5
         timeoutSeconds: 1
         successThreshold: 1
         failureThreshold: 3

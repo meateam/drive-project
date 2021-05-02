@@ -7,10 +7,6 @@
     "tag": "master"
 },
 {
-    "name": "delegation-service",
-    "tag": "master"
-},
-{
     "name": "download-service",
     "tag": "master"
 },
@@ -24,10 +20,6 @@
 },
 {
     "name": "permission-service",
-    "tag": "master"
-},
-{
-    "name": "permit-service",
     "tag": "master"
 },
 {
@@ -49,5 +41,9 @@
 {
     "name": "listener-service",
     "tag": "master"
-}
+},
+{
+    "name": "dropbox-service",
+    "tag": "master"
+},
 ]
