@@ -39,11 +39,7 @@
     "tag": "master"
 },
 {
-    "name": "listener-service",
-    "tag": "master"
-},
-{
     "name": "dropbox-service",
     "tag": "master"
-},
+}
 ]

@@ -39,10 +39,6 @@
         "tag": "develop"
     },
     {
-        "name": "listener-service",
-        "tag": "develop"
-    },
-    {
         "name": "dropbox-service",
         "tag": "develop"
     }
