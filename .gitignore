@@ -5,3 +5,4 @@ kd.config
 *helm/**/*.tgz
 *helm/**/*.lock
 services.local.json
+*.config

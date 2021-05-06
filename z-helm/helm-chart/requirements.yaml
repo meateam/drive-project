@@ -5,9 +5,6 @@ dependencies:
   - name: api-gateway
     version: 0.1.0
     repository: file://../api-gateway
-  - name: delegation-service
-    version: 0.1.0
-    repository: file://../delegation-service
   - name: download-service
     version: 0.1.0
     repository: file://../download-service
@@ -26,9 +23,6 @@ dependencies:
   - name: permission-service
     version: 0.1.0
     repository: file://../permission-service
-  - name: permit-service
-    version: 0.1.0
-    repository: file://../permit-service
   - name: test-saml-idp
     version: 0.1.0
     repository: file://../test-saml-idp
@@ -50,4 +44,6 @@ dependencies:
   - name: rabbitmq
     version: 0.1.0
     repository: file://../rabbitmq
-
+  - name: dropbox-service
+    version: 0.1.0
+    repository: file://../dropbox-service
