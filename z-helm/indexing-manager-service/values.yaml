@@ -5,25 +5,27 @@
 replicaCount: 1
 
 image:
-  tag: "develop"
+  tag: '1.0.0'
 
-nameOverride: "permission-service"
-fullnameOverride: "permission-service"
+nameOverride: 'indexing-manager-service'
+fullnameOverride: 'indexing-manager-service'
 deployment:
   health:
-    enabled: true
+    enabled: false
     checks:
       livenessProbe:
-        exec:
-          command: ["/bin/grpc_health_probe", "-addr=:8080"]
+        httpGet:
+          path: /healthcheck
+          port: 8080
         initialDelaySeconds: 5
         periodSeconds: 5
         timeoutSeconds: 1
         successThreshold: 1
         failureThreshold: 3
       readinessProbe:
-        exec:
-          command: ["/bin/grpc_health_probe", "-addr=:8080"]
+        httpGet:
+          path: /healthcheck
+          port: 8080
         initialDelaySeconds: 5
         periodSeconds: 5
         timeoutSeconds: 1
@@ -48,11 +50,11 @@ resources:
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   limits:
-   cpu: 200m
-   memory: 512Mi
+    cpu: 200m
+    memory: 256Mi
   requests:
-   cpu: 100m
-   memory: 256Mi
+    cpu: 100m
+    memory: 256Mi
 
 nodeSelector: {}
 

@@ -1,45 +1,45 @@
 [{
     "name": "api-gateway",
-    "tag": "v3.0.0"
+    "tag": "master"
 },
 {
     "name": "authentication-service",
-    "tag": "v2.1.0"
-},
-{
-    "name": "dropbox-service",
-    "tag": "add-cts-intergation"
+    "tag": "master"
 },
 {
     "name": "download-service",
-    "tag": "v2.0.0"
+    "tag": "master"
 },
 {
     "name": "drive-ui",
-    "tag": "v3.0.4"
+    "tag": "master"
 },
 {
     "name": "file-service",
-    "tag": "v3.0.0"
+    "tag": "master"
 },
 {
     "name": "permission-service",
-    "tag": "v3.1.1"
+    "tag": "master"
 },
 {
     "name": "search-service",
-    "tag": "v2.0.0"
+    "tag": "master"
 },
 {
     "name": "spike-service",
-    "tag": "v2.0.0"
+    "tag": "master"
 },
 {
     "name": "upload-service",
-    "tag": "v2.0.0"
+    "tag": "master"
 },
 {
     "name": "user-service",
-    "tag": "v2.1.0"
+    "tag": "master"
+},
+{
+    "name": "dropbox-service",
+    "tag": "master"
 }
 ]

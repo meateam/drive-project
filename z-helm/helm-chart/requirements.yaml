@@ -47,3 +47,26 @@ dependencies:
   - name: dropbox-service
     version: 0.1.0
     repository: file://../dropbox-service
+
+    # Barak's services
+  - name: indexing-manager-service
+    version: 0.1.0
+    repository: file://../indexing-manager-service
+  - name: indexing-drive-service
+    version: 0.1.0
+    repository: file://../indexing-drive-service
+  - name: indexing-parsing-service
+    version: 0.1.0
+    repository: file://../indexing-parsing-service
+  - name: indexing-elastic-service
+    version: 0.1.0
+    repository: file://../indexing-elastic-service
+  - name: indexing-delete-service
+    version: 0.1.0
+    repository: file://../indexing-delete-service
+  - name: indexing-error-service
+    version: 0.1.0
+    repository: file://../indexing-error-service
+  - name: indexing-search-service
+    version: 0.1.0
+    repository: file://../indexing-search-service

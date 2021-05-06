@@ -5,25 +5,27 @@
 replicaCount: 1
 
 image:
-  tag: "develop"
+  tag: "1.0.0"
 
-nameOverride: "permission-service"
-fullnameOverride: "permission-service"
+nameOverride: "indexing-elastic-service"
+fullnameOverride: "indexing-elastic-service"
 deployment:
   health:
-    enabled: true
+    enabled: false
     checks:
       livenessProbe:
-        exec:
-          command: ["/bin/grpc_health_probe", "-addr=:8080"]
+        httpGet:
+          path: /healthcheck
+          port: 8083
         initialDelaySeconds: 5
         periodSeconds: 5
         timeoutSeconds: 1
         successThreshold: 1
         failureThreshold: 3
       readinessProbe:
-        exec:
-          command: ["/bin/grpc_health_probe", "-addr=:8080"]
+        httpGet:
+          path: /healthcheck
+          port: 8083
         initialDelaySeconds: 5
         periodSeconds: 5
         timeoutSeconds: 1
@@ -31,8 +33,8 @@ deployment:
         failureThreshold: 3
 service:
   type: ClusterIP
-  port: 8080
-  targetPort: 8080
+  port: 8083
+  targetPort: 8083
 
 ingress:
   enabled: false
@@ -49,7 +51,7 @@ resources:
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   limits:
    cpu: 200m
-   memory: 512Mi
+   memory: 256Mi
   requests:
    cpu: 100m
    memory: 256Mi
