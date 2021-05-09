@@ -15,7 +15,7 @@ deployment:
     checks:
       livenessProbe:
         exec:
-          command: ['/bin/grpc_health_probe', '-addr=:8080']
+          command: ['/bin/grpc_health_probe', '-addr=:8005']
         initialDelaySeconds: 5
         periodSeconds: 5
         timeoutSeconds: 1
@@ -23,7 +23,7 @@ deployment:
         failureThreshold: 3
       readinessProbe:
         exec:
-          command: ['/bin/grpc_health_probe', '-addr=:8080']
+          command: ['/bin/grpc_health_probe', '-addr=:8005']
         initialDelaySeconds: 5
         periodSeconds: 5
         timeoutSeconds: 1

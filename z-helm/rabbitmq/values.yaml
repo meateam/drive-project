@@ -31,7 +31,10 @@ deployment:
         timeoutSeconds: 1
         successThreshold: 1
         failureThreshold: 3
-
+service:
+  type: ClusterIP
+  port: 5672
+  targetPort: 5672
 ingress:
   enabled: true
   # annotations: {nginx.ingress.kubernetes.io/rewrite-target: /rabbit/$1}
