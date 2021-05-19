@@ -4,9 +4,6 @@
 [submodule "authentication-service"]
 	path = authentication-service
 	url = https://github.com/meateam/authentication-service
-[submodule "delegation-service"]
-	path = delegation-service
-	url = https://github.com/meateam/delegation-service
 [submodule "download-service"]
 	path = download-service
 	url = https://github.com/meateam/download-service.git
@@ -19,9 +16,6 @@
 [submodule "permission-service"]
 	path = permission-service
 	url = https://github.com/meateam/permission-service
-[submodule "permit-service"]
-	path = permit-service
-	url = https://github.com/meateam/permit-service
 [submodule "search-service"]
 	path = search-service
 	url = https://github.com/meateam/search-service
@@ -40,3 +34,6 @@
 [submodule "hi-service"]
 	path = hi-service
 	url = https://github.com/meateam/hi-service.git
+[submodule "dropbox-service"]
+	path = dropbox-service
+	url = https://github.com/meateam/dropbox-service
