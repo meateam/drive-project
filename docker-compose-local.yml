@@ -11,7 +11,7 @@ services:
     image: api-gateway
     build: ./api-gateway/
     env_file:
-      - ./kdrive.env
+      - kdrive.env
     ports:
       - "8080:8080"
     depends_on:
@@ -29,13 +29,13 @@ services:
     ports:
       - "9000:9000"
     env_file:
-      - ./kdrive.env
+      - kdrive.env
     command: server /data
   upload-service:
     image: upload-service
     build: ./upload-service/
     env_file:
-      - ./kdrive.env
+      - kdrive.env
     depends_on:
       - minio
     ports:
@@ -44,7 +44,7 @@ services:
     image: download-service
     build: ./download-service/
     env_file:
-      - ./kdrive.env
+      - kdrive.env
     ports:
       - "8082:8080"
     depends_on:
@@ -53,7 +53,7 @@ services:
     image: file-service
     build: ./file-service/
     env_file:
-      - ./kdrive.env
+      - kdrive.env
     ports:
       - "8083:8080"
     depends_on:
@@ -72,7 +72,7 @@ services:
     ports:
       - "8084:8080"
     env_file:
-      - ./kdrive.env
+      - kdrive.env
     depends_on:
       - saml-idp
       - user-service
@@ -81,14 +81,14 @@ services:
     ports:
       - "8085:8080"
     env_file:
-      - ./kdrive.env
+      - kdrive.env
   user-service:
     image: user-service
     build: ./user-service/
     ports:
       - "8086:8080"
     env_file:
-      - ./kdrive.env
+      - kdrive.env
     depends_on:
       - mongo
       - redis
@@ -102,14 +102,14 @@ services:
     ports:
       - "8087:8080"
     env_file:
-      - ./kdrive.env
+      - kdrive.env
     depends_on:
       - mongo
   search-service:
     image: search-service
     build: ./search-service/
     env_file:
-      - ./kdrive.env
+      - kdrive.env
     ports:
       - "8088:8080"
     depends_on:
@@ -118,7 +118,7 @@ services:
   gotenberg-service:
     image: "drivehub.azurecr.io/meateam/gotenberg:6"
     env_file:
-      - ./kdrive.env
+      - kdrive.env
     tmpfs:
       - /tmp
       - /gotenberg/tmp
@@ -140,36 +140,26 @@ services:
       interval: 5s
       timeout: 10s
       retries: 5
-  # kibana:
-  #   image: "docker.elastic.co/kibana/kibana:7.5.0"
-  #   container_name: kibana
-  #   ports:
-  #     - "5601:5601"
-  #   depends_on:
-  #     - elasticsearch
+  kibana:
+    image: "docker.elastic.co/kibana/kibana:7.5.0"
+    container_name: kibana
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
   spike-service:
     image: spike-service
     build: ./spike-service/
     env_file:
-      - ./kdrive.env
+      - kdrive.env
     depends_on:
       - redis
     ports:
       - "8090:8080"
-  delegation-service:
-    image: delegation-service
-    build: ./delegation-service/
+  dropbox-service:
+    image: dropbox-service
+    build: ./dropbox-service/
     ports:
       - "8091:8080"
     env_file:
-      - ./kdrive.env
-  permit-service:
-    image: permit-service
-    build: ./permit-service/
-    env_file:
-      - ./kdrive.env
-    ports:
-      - "8092:8080"
-    depends_on:
-      - mongo
-      - spike-service
+      - kdrive.env
