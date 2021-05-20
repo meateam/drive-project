@@ -41,33 +41,5 @@
     {
         "name": "dropbox-service",
         "tag": "develop"
-    },
-    {
-        "name":"indexing-manager-service",
-        "tag":"develop"
-    },
-    {
-        "name":"indexing-drive-service",
-        "tag":"develop"
-    },
-    {
-        "name":"indexing-delete-service",
-        "tag":"develop"
-    },
-    {
-        "name":"indexing-elastic-service",
-        "tag":"develop"
-    },
-    {
-        "name":"indexing-parsing-service",
-        "tag":"develop"
-    },
-    {
-        "name":"indexing-search-service",
-        "tag":"develop"
-    },
-    {
-        "name":"indexing-error-service",
-        "tag":"develop"
     }
 ]

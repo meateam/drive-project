@@ -1,8 +1,9 @@
 data/
 compose.env
 *.env
-kd.config
+*kd.config
 *helm/**/*.tgz
 *helm/**/*.lock
 services.local.json
 *.config
+services.halbana.json
