@@ -31,6 +31,12 @@ tty_green="$(tty_mkbold 32)"
 tty_bold="$(tty_mkbold 39)"
 tty_reset="$(tty_escape 0)"
 
+# text vars
+BOLD=$(tput bold)
+NORMAL=$(tput sgr0)
+RED='\033[0;31m'
+BLUE='\033[0;34m'
+
 
 msg() {
   printf "${tty_blue}==>${tty_bold} %s${tty_reset}\n" "$1"
@@ -125,6 +131,11 @@ helm_change_tag() {
     fi
 }
 
+## -------
+# sleep function
+sleepf() {
+    printf "${BLUE}${BOLD}sleep $1..."; sleep $1
+}
 
 ## --------------------------------------------------------------------------------------------------------
 # 1. Get script flags
@@ -134,14 +145,16 @@ KBS=false
 GIT=false
 FORCE=false
 ACR=false
+CT=false
 for arg in "$@"; do
     case $arg in
-        -z | --zip) ZIP=true;;
-        -h | --helm) HELM=true;;
-        -k | --kubectl) KBS=true;;
-        -g | --git) GIT=true;;
-        -f | --force) FORCE=true;;
-        -a | --acr ) ACR=true;;
+        -z  | --zip) ZIP=true;;
+        -h  | --helm) HELM=true;;
+        -k  | --kubectl) KBS=true;;
+        -g  | --git) GIT=true;;
+        -f  | --force) FORCE=true;;
+        -a  | --acr ) ACR=true;;
+        -ct | --chaostesting ) CT=true;;
     esac
 done
 
@@ -255,6 +268,66 @@ if ($KBS); then
     msg "helm install $HELM_DEPLOY_NAME"
     helm install z-helm/helm-chart/ --name=$HELM_DEPLOY_NAME --namespace=$KBS_NAMESPACE \
     --set global.ingress.hosts[0]=$KBS_DNS.northeurope.cloudapp.azure.com
+fi
+
+## -------
+# 10. runing cheos testing on api
+
+authorization="Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlNTY4ODMyNDIwM2ZjNDAwNDM1OTFhYSIsImFkZnNJZCI6InQyMzQ1ODc4OUBqZWxsby5jb20iLCJnZW5lc2lzSWQiOiI1ZTU2ODgzMjQyMDNmYzQwMDQzNTkxYWEiLCJuYW1lIjp7ImZpcnN0TmFtZSI6Iteg15nXmden15kiLCJsYXN0TmFtZSI6IteQ15PXmdeT16EifSwiZGlzcGxheU5hbWUiOiJ0MjM0NTg3ODlAamVsbG8uY29tIiwicHJvdmlkZXIiOiJHZW5lc2lzIiwiZW50aXR5VHlwZSI6ImRpZ2ltb24iLCJjdXJyZW50VW5pdCI6Im5pdHJvIHVuaXQiLCJkaXNjaGFyZ2VEYXkiOiIyMDIyLTExLTMwVDIyOjAwOjAwLjAwMFoiLCJyYW5rIjoibWVnYSIsImpvYiI6Iteo15XXpteXIiwicGhvbmVOdW1iZXJzIjpbIjAyNjY2Njk5OCIsIjA1Mi0xMjM0NTY1Il0sImFkZHJlc3MiOiLXqNeX15XXkSDXlNee157Xqten15nXnSAzNCIsInBob3RvIjpudWxsLCJqdGkiOiI3MDllYmYzMC0xZWExLTQ1ZWQtYTAyMy1hNzMyOWMyMjY1ZTUiLCJpYXQiOjE2MjA1NDM5MDYsImV4cCI6MTYyMzEzNTkwNiwiZmlyc3ROYW1lIjoi16DXmdeZ16fXmSIsImxhc3ROYW1lIjoi15DXk9eZ15PXoSJ9.-TqCPl_raIAdCaPVSS8o46qtl4tuIcncbiBBeM-dHTc"
+
+upload_test_file() {
+    local  __resultvar=$1
+    URL="http://$KBS_DNS.northeurope.cloudapp.azure.com/api/upload?uploadType=multipart"
+    printf "${BOLD}TEST URL: $URL\n"
+    response=$(curl -s -w "\n%{http_code}" --request POST --header "Authorization: $authorization" --form 'file=@./ChaosTesting/test.docx' $URL)
+    local  myresult=(${response[@]})
+    eval $__resultvar="'$myresult'"
+}
+
+run_test_on_api_urls() {
+    fileID=$1
+    URL="http://$KBS_DNS.northeurope.cloudapp.azure.com/api/files/$fileID"
+    curl --location --request GET --silent -i --header "Authorization: $authorization"  ${URL}
+}
+
+if ($CT); then
+    msg "Runing chaos testing on api"
+
+    msg "uploade test file and get file id" 
+    upload_test_file fileID
+    printf "${BLUE}${BOLD}File id: $fileID\n"
+
+    for service in $(cat $JSON_FILE | jq -r '.[]| @base64') ; do
+        
+        service_name=$(echo "$service" | base64 --decode | jq -r '.name')
+        echo "=========================================================================================="
+        echo "                                TEST: $service_name                                       "
+        echo "=========================================================================================="
+        printf "${RED}${BOLD}Turn off service: $service_name\n"
+
+        # set scale to 0
+        kubectl scale deployment $service_name --replicas=0 -n $KBS_NAMESPACE
+
+        sleepf 5
+        
+        POD_STATUS=$(kubectl get pods -n yosef | awk "\$1 ~ /"$service_name"/ { print }" | awk '{print $2, $3 }')
+        success "$POD_STATUS"
+
+        run_test_on_api_urls $fileID
+
+        success "Turn on service: $service_name"
+        kubectl scale deployment $service_name --replicas=1 -n $KBS_NAMESPACE
+
+        POD_RUNNING="1/1 Running"
+        POD_STATUS="0/1 Terminating"
+        while [[ $POD_STATUS != $POD_RUNNING ]]; do
+            sleepf 5
+            POD_STATUS=$(kubectl get pods -n yosef | awk "\$1 ~ /"$service_name"/ { print }" | awk '{print $2, $3 }')
+            success "$service_name pod status is $POD_STATUS"
+        done
+
+    done
+
 fi
 
 success "DONE..."
