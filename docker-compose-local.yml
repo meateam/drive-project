@@ -23,7 +23,7 @@ services:
       - search-service
       - gotenberg-service
   minio:
-    image: minio/minio
+    image: minio/minio:RELEASE.2019-10-02T21-19-38Z
     volumes:
       - "./data:/data"
     ports:
@@ -156,20 +156,13 @@ services:
       - redis
     ports:
       - "8090:8080"
-  delegation-service:
-    image: delegation-service
-    build: ./delegation-service/
-    ports:
-      - "8091:8080"
-    env_file:
-      - ./kdrive.env
-  permit-service:
-    image: permit-service
-    build: ./permit-service/
-    env_file:
-      - ./kdrive.env
+  dropbox-service:
+    image: dropbox-service
+    build: ./dropbox-service/
     ports:
       - "8092:8080"
+    env_file:
+      - ./kdrive.env
     depends_on:
       - mongo
       - spike-service
