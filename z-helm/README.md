@@ -59,11 +59,11 @@ In order to add a new service to the helm chart follow the steps:
   ### Update ConfigMap:
   - Delete ConfigMap:
     ```
-    kubectl delete configmap kd.config --namespace <wanted namespace>
+    kubectl delete configmap kdconfig --namespace <wanted namespace>
     ```
   - Recreate your ConfigMap:
     ```
-    kubectl create configmap --from-env-file=<location of the env file> kd.config --namespace <wanted namespace>
+    kubectl create configmap --from-env-file=<location of the env file> kdconfig --namespace <wanted namespace>
     ```
   - Restart your deployment:
     ```

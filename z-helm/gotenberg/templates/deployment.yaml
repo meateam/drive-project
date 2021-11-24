@@ -23,7 +23,7 @@ spec:
           image: "{{ .Values.image.repository }}/meateam/{{ template "common.name" . }}:{{ .Values.image.tag }}"
           envFrom:
           - configMapRef:
-              name: kd.config
+              name: kdconfig
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
