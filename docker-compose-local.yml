@@ -93,7 +93,7 @@ services:
       - mongo
       - redis
   redis:
-    image: "drivehub.azurecr.io/meateam/redis:alpine"
+    image: "redis:alpine"
     ports:
       - "6379:6379"
   permission-service:
@@ -124,6 +124,17 @@ services:
       - /gotenberg/tmp
     ports:
       - "8089:8080"
+
+  fav-service:
+    image: fav-service
+    build: ./fav-service
+    env_file:
+      - ./kdrive.env
+    ports:
+      - 8092:8080
+    depends_on:
+      - mongo
+
   elasticsearch:
     image: "docker.elastic.co/elasticsearch/elasticsearch:7.5.0"
     environment:
@@ -140,13 +151,6 @@ services:
       interval: 5s
       timeout: 10s
       retries: 5
-  # kibana:
-  #   image: "docker.elastic.co/kibana/kibana:7.5.0"
-  #   container_name: kibana
-  #   ports:
-  #     - "5601:5601"
-  #   depends_on:
-  #     - elasticsearch
   spike-service:
     image: spike-service
     build: ./spike-service/
@@ -156,20 +160,14 @@ services:
       - redis
     ports:
       - "8090:8080"
-  delegation-service:
-    image: delegation-service
-    build: ./delegation-service/
-    ports:
-      - "8091:8080"
-    env_file:
-      - ./kdrive.env
-  permit-service:
-    image: permit-service
-    build: ./permit-service/
+  dropbox-service:
+    image: dropbox-service
+    build: ./dropbox-service
     env_file:
       - ./kdrive.env
     ports:
-      - "8092:8080"
+      - 8091:8080
     depends_on:
       - mongo
       - spike-service
+      - user-service

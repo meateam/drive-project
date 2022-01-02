@@ -116,6 +116,16 @@ services:
       - /gotenberg/tmp
     ports:
       - "8089:8080"
+
+  fav-service:
+    image: "drivehub.azurecr.io/meateam/fav-service:develop"
+    env_file:
+      - ./kdrive.env
+    ports:
+      - 8092:8080
+    depends_on:
+      - mongo
+
   elasticsearch:
     image: "docker.elastic.co/elasticsearch/elasticsearch:7.5.0"
     environment:
@@ -147,18 +157,3 @@ services:
       - redis
     ports:
       - "8090:8080"
-  delegation-service:
-    image: "drivehub.azurecr.io/meateam/delegation-service:v2.0.0"
-    ports:
-      - "8091:8080"
-    env_file:
-      - ./kdrive.env
-  permit-service:
-    image: "drivehub.azurecr.io/meateam/permit-service:v2.0.0"
-    env_file:
-      - ./kdrive.env
-    ports:
-      - "8092:8080"
-    depends_on:
-      - mongo
-      - spike-service

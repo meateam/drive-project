@@ -37,3 +37,6 @@
 [submodule "dropbox-service"]
 	path = dropbox-service
 	url = https://github.com/meateam/dropbox-service
+[submodule "fav-service"]
+	path = fav-service
+	url = git@github.com:meateam/fav-service.git
