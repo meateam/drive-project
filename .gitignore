@@ -1,6 +1,5 @@
 data/
 compose.env
-*.env
 *kdconfig
 *helm/**/*.tgz
 *helm/**/*.lock
