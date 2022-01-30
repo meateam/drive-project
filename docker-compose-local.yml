@@ -5,23 +5,23 @@ services:
     build: ./drive-ui/
     ports:
       - "80:80"
-    depends_on:
-      - api-gateway
-  api-gateway:
-    image: api-gateway
-    build: ./api-gateway/
-    env_file:
-      - ./kdrive.env
-    ports:
-      - "8080:8080"
-    depends_on:
-      - upload-service
-      - download-service
-      - file-service
-      - authentication-service
-      - permission-service
-      - search-service
-      - gotenberg-service
+  #   depends_on:
+  #     - api-gateway
+  # api-gateway:
+  #   image: api-gateway
+  #   build: ./api-gateway/
+  #   env_file:
+  #     - ./kdrive.env
+  #   ports:
+  #     - "8080:8080"
+  #   depends_on:
+  #     - upload-service
+  #     - download-service
+  #     - file-service
+  #     - authentication-service
+  #     - permission-service
+  #     - search-service
+  #     - gotenberg-service
   minio:
     image: minio/minio
     volumes:
