@@ -41,5 +41,9 @@
     {
         "name": "dropbox-service",
         "tag": "develop"
+    },
+    {
+        "name": "fav-service",
+        "tag": "develop"
     }
 ]

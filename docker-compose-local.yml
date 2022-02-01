@@ -156,20 +156,23 @@ services:
       - redis
     ports:
       - "8090:8080"
-  delegation-service:
-    image: delegation-service
-    build: ./delegation-service/
+  dropbox-service:
+    image: dropbox-service
+    build: ./dropbox-service/
     ports:
       - "8091:8080"
     env_file:
       - ./kdrive.env
-  permit-service:
-    image: permit-service
-    build: ./permit-service/
+    depends_on:
+      - mongo
+      - spike-service
+      - user-service
+  fav-service:
+    image: fav-service
+    build: ./fav-service/
     env_file:
       - ./kdrive.env
     ports:
       - "8092:8080"
     depends_on:
       - mongo
-      - spike-service

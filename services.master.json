@@ -41,5 +41,9 @@
 {
     "name": "dropbox-service",
     "tag": "master"
+},
+{
+    "name": "fav-service",
+    "tag": "main"
 }
 ]

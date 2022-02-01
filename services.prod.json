@@ -1,6 +1,6 @@
 [{
     "name": "api-gateway",
-    "tag": "v4.4.0"
+    "tag": "v5.0.2"
 },
 {
     "name": "authentication-service",
@@ -16,11 +16,11 @@
 },
 {
     "name": "drive-ui",
-    "tag": "v3.8.2"
+    "tag": "v3.12.0"
 },
 {
     "name": "file-service",
-    "tag": "v3.0.1"
+    "tag": "v3.0.2"
 },
 {
     "name": "permission-service",
@@ -32,7 +32,7 @@
 },
 {
     "name": "spike-service",
-    "tag": "v2.0.0"
+    "tag": "v2.0.2"
 },
 {
     "name": "upload-service",
@@ -40,6 +40,6 @@
 },
 {
     "name": "user-service",
-    "tag": "v3.2.0"
+    "tag": "v3.2.3"
 }
 ]

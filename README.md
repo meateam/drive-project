@@ -63,6 +63,7 @@ ACR_PASS=""                     # acr password from drivehub Access keys, in azu
 - **services.master.json** - master tags (don't change this json, should be remain the same)
 - **services.prod.json** - prod tags (the tags that in inside environment)
 - **services.branch.json** - your private json tags for your branch, in develop & master branches it has no importance.
+- **services.local.json** - your private json tags.
 
 ---
 
