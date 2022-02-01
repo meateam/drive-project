@@ -41,3 +41,6 @@ dependencies:
   - name: gotenberg
     version: 0.1.0
     repository: file://../gotenberg
+  - name: fav-service
+    version: 0.1.0
+    repository: file://../fav-service
