@@ -2,6 +2,7 @@ data/
 compose.env
 *.env
 *kdconfig
+kdconfigrabaz
 *helm/**/*.tgz
 *helm/**/*.lock
 services.local.json
