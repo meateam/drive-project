@@ -10,7 +10,7 @@ images:
 service:
   type: ClusterIP
   ports:
-  - name: test-saml-idp
+  - name: http
     port: 80
     targetPort: 8080
 

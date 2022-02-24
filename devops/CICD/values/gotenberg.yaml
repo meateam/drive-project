@@ -10,7 +10,7 @@ images:
 service:
   type: ClusterIP
   ports:
-  - name: gotenberg
+  - name: http
     port: 8080
 
 config:
