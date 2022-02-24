@@ -1,0 +1,119 @@
+environments:
+  dev:
+  prod:
+
+repositories:
+  - name: yesodot
+    url: https://harborreg-2.northeurope.cloudapp.azure.com/chartrepo/library
+    username: {{ requiredEnv "HARBOR_USER" }}
+    password: {{ requiredEnv "HARBOR_PASSWORD" }}
+  
+releases:
+  - name: api-gateway
+    namespace: drive
+    chart: yesodot/common
+    version: {{ requiredEnv "COMMON_VERSION" | default "0.5.2" }}
+    values:
+      - ./values/api-gateway.yaml
+
+  - name: authentication-service
+    namespace: drive
+    chart: yesodot/common
+    version: {{ requiredEnv "COMMON_VERSION" | default "0.5.2" }}
+    values:
+      - ./values/authentication-service.yaml
+
+  - name: download-service
+    namespace: drive
+    chart: yesodot/common
+    version: {{ requiredEnv "COMMON_VERSION" | default "0.5.2" }}
+    values:
+      - ./values/download-service.yaml
+
+  - name: drive-ui
+    namespace: drive
+    chart: yesodot/common
+    version: {{ requiredEnv "COMMON_VERSION" | default "0.5.2" }}
+    values:
+      - ./values/drive-ui.yaml
+
+  - name: dropbox-service
+    namespace: drive
+    chart: yesodot/common
+    version: {{ requiredEnv "COMMON_VERSION" | default "0.5.2" }}
+    values:
+      - ./values/dropbox-service.yaml
+
+  - name: fav-service
+    namespace: drive
+    chart: yesodot/common
+    version: {{ requiredEnv "COMMON_VERSION" | default "0.5.2" }}
+    values:
+      - ./values/fav-service.yaml
+
+  - name: file-service
+    namespace: drive
+    chart: yesodot/common
+    version: {{ requiredEnv "COMMON_VERSION" | default "0.5.2" }}
+    values:
+      - ./values/file-service.yaml
+
+  - name: gotenberg
+    namespace: drive
+    chart: yesodot/common
+    version: {{ requiredEnv "COMMON_VERSION" | default "0.5.2" }}
+    values:
+      - ./values/gotenberg.yaml
+
+  - name: permission-service
+    namespace: drive
+    chart: yesodot/common
+    version: {{ requiredEnv "COMMON_VERSION" | default "0.5.2" }}
+    values:
+      - ./values/permission-service.yaml
+
+  - name: redis
+    namespace: drive
+    chart: yesodot/common
+    version: {{ requiredEnv "COMMON_VERSION" | default "0.5.2" }}
+    values:
+      - ./values/redis.yaml
+
+  - name: search-service
+    namespace: drive
+    chart: yesodot/common
+    version: {{ requiredEnv "COMMON_VERSION" | default "0.5.2" }}
+    values:
+      - ./values/search-service.yaml
+
+  - name: spike-service
+    namespace: drive
+    chart: yesodot/common
+    version: {{ requiredEnv "COMMON_VERSION" | default "0.5.2" }}
+    values:
+      - ./values/spike-service.yaml
+
+  - name: test-saml-idp
+    namespace: drive
+    chart: yesodot/common
+    version: {{ requiredEnv "COMMON_VERSION" | default "0.5.2" }}
+    values:
+      - ./values/test-saml-idp.yaml
+
+  - name: upload-service
+    namespace: drive
+    chart: yesodot/common
+    version: {{ requiredEnv "COMMON_VERSION" | default "0.5.2" }}
+    values:
+      - ./values/upload-service.yaml
+
+  - name: user-service
+    namespace: drive
+    chart: yesodot/common
+    version: {{ requiredEnv "COMMON_VERSION" | default "0.5.2" }}
+    values:
+      - ./values/user-service.yaml
+
+helmDefaults:
+  recreatePods: true
+  createNamespace: true

@@ -1,0 +1,20 @@
+name: "permission-service"
+replicaCount: 1
+
+images:
+  PullSecrets: 
+    name: test-drive-secret
+  repository: drivehub.azurecr.io/permission-service
+  tag: "develop"
+
+service:
+  type: ClusterIP
+  ports:
+  - name: permission-service
+    port: 8080
+
+config:
+  configmaps: [global-config]
+
+ingress:
+  enabled: false

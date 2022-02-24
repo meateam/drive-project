@@ -1,0 +1,25 @@
+name: "test-saml-idp"
+replicaCount: 1
+
+images:
+  PullSecrets: 
+    name: test-drive-secret
+  repository: drivehub.azurecr.io/test-saml-idp
+  tag: "develop"
+
+service:
+  type: ClusterIP
+  ports:
+  - name: test-saml-idp
+    port: 80
+    targetPort: 8080
+
+config:
+  configmaps: [global-config]
+
+ingress:
+  enabled: true
+  paths:
+    - path: /simplesaml
+      service: test-saml-idp
+      port: "80"

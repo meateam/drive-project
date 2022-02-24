@@ -1,0 +1,20 @@
+name: "upload-service"
+replicaCount: 1
+
+images:
+  PullSecrets: 
+    name: test-drive-secret
+  repository: drivehub.azurecr.io/upload-service
+  tag: "develop"
+
+service:
+  type: ClusterIP
+  ports:
+  - name: upload-service
+    port: 8080
+
+config:
+  configmaps: [global-config]
+
+ingress:
+  enabled: false

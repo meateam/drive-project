@@ -1,0 +1,28 @@
+name: "api-gateway"
+replicaCount: 1
+
+images:
+  PullSecrets: 
+    name: test-drive-secret
+  repository: drivehub.azurecr.io/api-gateway
+  tag: "develop"
+
+service:
+  type: ClusterIP
+  ports:
+  - name: api-gateway
+    port: 80
+    targetPort: 8080
+
+
+config:
+  configmaps: [global-config]
+
+ingress:
+  enabled: true
+  hosts:
+  - host: test-drive.northeurope.cloudapp.azure.com
+    paths:
+      - path: /api
+        service: api-gateway
+        port: "80"

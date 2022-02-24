@@ -1,0 +1,20 @@
+name: "gotenberg"
+replicaCount: 1
+
+images:
+  PullSecrets: 
+    name: test-drive-secret
+  repository: drivehub.azurecr.io/gotenberg
+  tag: "6"
+
+service:
+  type: ClusterIP
+  ports:
+  - name: gotenberg
+    port: 8080
+
+config:
+  configmaps: [global-config]
+
+ingress:
+  enabled: false

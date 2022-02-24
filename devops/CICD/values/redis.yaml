@@ -1,0 +1,20 @@
+name: "redis"
+replicaCount: 1
+
+images:
+  PullSecrets: 
+    name: test-drive-secret
+  repository: drivehub.azurecr.io/redis
+  tag: "alpine"
+
+service:
+  type: ClusterIP
+  ports:
+  - name: redis
+    port: 8080
+
+config:
+  configmaps: [global-config]
+
+ingress:
+  enabled: false

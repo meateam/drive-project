@@ -1,0 +1,20 @@
+name: "fav-service"
+replicaCount: 1
+
+images:
+  PullSecrets: 
+    name: test-drive-secret
+  repository: drivehub.azurecr.io/fav-service
+  tag: "develop"
+
+service:
+  type: ClusterIP
+  ports:
+  - name: fav-service
+    port: 8080
+
+config:
+  configmaps: [global-config]
+
+ingress:
+  enabled: false

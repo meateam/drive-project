@@ -1,0 +1,27 @@
+name: "authentication-service"
+replicaCount: 1
+
+images:
+  PullSecrets: 
+    name: test-drive-secret
+  repository: drivehub.azurecr.io/authentication-service
+  tag: "develop"
+
+service:
+  type: ClusterIP
+  ports:
+  - name: authentication-service
+    port: 80
+    targetPort: 8080
+
+config:
+  configmaps: [global-config]
+
+ingress:
+  enabled: true
+  hosts:
+  - host: test-drive.northeurope.cloudapp.azure.com
+    paths:
+      - path: /auth
+        service: authentication-service
+        port: "80"

@@ -1,0 +1,26 @@
+name: "drive-ui"
+replicaCount: 1
+
+images:
+  PullSecrets: 
+    name: test-drive-secret
+  repository: drivehub.azurecr.io/drive-ui
+  tag: "develop"
+
+service:
+  type: ClusterIP
+  ports:
+  - name: drive-ui
+    port: 80
+
+config:
+  configmaps: [global-config]
+
+ingress:
+  enabled: true
+  hosts:
+  - host: test-drive.northeurope.cloudapp.azure.com
+    paths:
+      - path: /
+        service: drive-ui
+        port: "80"
