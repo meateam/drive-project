@@ -4,7 +4,7 @@ replicaCount: 1
 images:
   PullSecrets: 
     name: test-drive-secret
-  repository: drivehub.azurecr.io/redis
+  repository: drivehub.azurecr.io/meateam/redis
   tag: "alpine"
 
 service:

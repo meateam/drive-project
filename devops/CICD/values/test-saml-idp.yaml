@@ -4,7 +4,7 @@ replicaCount: 1
 images:
   PullSecrets: 
     name: test-drive-secret
-  repository: drivehub.azurecr.io/test-saml-idp
+  repository: drivehub.azurecr.io/meateam/test-saml-idp
   tag: "develop"
 
 service:

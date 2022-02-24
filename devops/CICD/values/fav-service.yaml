@@ -4,7 +4,7 @@ replicaCount: 1
 images:
   PullSecrets: 
     name: test-drive-secret
-  repository: drivehub.azurecr.io/fav-service
+  repository: drivehub.azurecr.io/meateam/fav-service
   tag: "develop"
 
 service:

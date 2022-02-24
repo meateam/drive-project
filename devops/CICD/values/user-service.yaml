@@ -4,7 +4,7 @@ replicaCount: 1
 images:
   PullSecrets: 
     name: test-drive-secret
-  repository: drivehub.azurecr.io/user-service
+  repository: drivehub.azurecr.io/meateam/user-service
   tag: "develop"
 
 service:
