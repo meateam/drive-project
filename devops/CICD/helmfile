@@ -1,6 +1,6 @@
-environments:
-  dev:
-  prod:
+# environments:
+#   dev:
+#   prod:
 
 repositories:
   - name: yesodot
