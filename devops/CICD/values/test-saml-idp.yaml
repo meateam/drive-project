@@ -20,7 +20,7 @@ config:
 ingress:
   enabled: true
   hosts:
-  - host: test-drive.northeurope.cloudapp.azure.com
+  - host: drive-test.team-pandora.com
     paths:
       - path: /simplesaml
         service: test-saml-idp
