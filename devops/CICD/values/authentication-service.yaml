@@ -11,7 +11,7 @@ service:
   type: ClusterIP
   ports:
   - name: http
-    port: 80
+    port: 8080
     targetPort: 8080
 
 config:
@@ -24,4 +24,4 @@ ingress:
     paths:
       - path: /auth
         service: authentication-service
-        port: "80"
+        port: "8080"
